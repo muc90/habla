@@ -729,9 +729,43 @@ body::after {
   gap: 10px;
 }
 
-/* CATEGORY TABS */
+/* CATEGORY SELECT (statt Tabs für bessere Mobile-UX) */
+.cat-select-wrap {
+  margin-bottom: 20px;
+}
+
+.cat-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%237A6A52' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.cat-select:hover {
+  border-color: var(--terra);
+}
+
+.cat-select:focus {
+  outline: none;
+  border-color: var(--terra);
+  box-shadow: 0 0 0 3px var(--terra-light);
+}
+
+/* CATEGORY TABS (alt - auskommentiert für Desktop-Fallback) */
 .cat-tabs {
-  display: flex;
+  display: none; /* Versteckt, wir nutzen jetzt Select */
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 4px;
@@ -1098,7 +1132,12 @@ body::after {
     <!-- FLASHCARDS -->
     <div id="tab-flashcard" class="tab-content" style="display:block">
       <div class="section-title">🃏 Vokabelkarten</div>
-      <div class="cat-tabs" id="catTabs"></div>
+      
+      <div class="cat-select-wrap">
+        <select class="cat-select" id="catSelect" onchange="filterCategory(this.value)">
+          <option value="all">Alle Kategorien</option>
+        </select>
+      </div>
 
       <div class="flashcard-wrap">
         <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -1809,25 +1848,28 @@ function showTab(name, el) {
 // ══════════════════════════════════════════════════════
 function initCatTabs() {
   const cats = ['all', ...new Set(state.vocab.map(v=>v.cat))];
-  const container = document.getElementById('catTabs');
-  container.innerHTML = '';
+  const select = document.getElementById('catSelect');
+  if (!select) return;
+  
+  select.innerHTML = '';
   cats.forEach(c => {
-    const d = document.createElement('div');
-    d.className = 'cat-tab' + (c==='all'?' active':'');
-    d.textContent = c==='all'?'Alle':c;
-    d.onclick = () => {
-      state.currentCat = c;
-      document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
-      d.classList.add('active');
-      state.cardIndex = 0;
-      state.cardQueue = []; // Reset queue
-      buildCardQueue(); // Rebuild for new category
-      loadCard();
-    };
-    container.appendChild(d);
+    const option = document.createElement('option');
+    option.value = c;
+    option.textContent = c === 'all' ? 'Alle Kategorien' : c;
+    if (c === state.currentCat) option.selected = true;
+    select.appendChild(option);
   });
+  
   // Reset category to 'all' when initializing
   state.currentCat = 'all';
+}
+
+function filterCategory(cat) {
+  state.currentCat = cat;
+  state.cardIndex = 0;
+  state.cardQueue = []; // Reset queue
+  buildCardQueue(); // Rebuild for new category
+  loadCard();
 }
 
 function filteredVocab() {
