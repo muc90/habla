@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Habla! – Spanisch lernen</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sun: #F5A623;
+  --sun-light: rgba(245,166,35,0.12);
+  --terra: #C94B2C;
+  --terra-light: rgba(201,75,44,0.1);
+  --ocean: #1B6CA8;
+  --ocean-light: rgba(27,108,168,0.1);
+  --lime: #5CB85C;
+  --lime-light: rgba(92,184,92,0.12);
+  --bg: #FFFBF5;
+  --bg2: #FFF5E6;
+  --surface: #FFFFFF;
+  --border: #EDE0CC;
+  --text: #1C1208;
+  --text-muted: #7A6A52;
+  --text-faint: #B8A88A;
+  --shadow: 0 4px 24px rgba(28,18,8,0.08);
+  --shadow-lg: 0 12px 48px rgba(28,18,8,0.14);
+  --radius: 16px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BG DECO */
+body::before {
+  content: '';
+  position: fixed;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+  top: -200px; right: -200px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,75,44,0.06) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; position: relative; z-index: 1; }
+.screen.active { display: block; }
+
+/* ══════════════════════ ONBOARDING ══ */
+#screen-onboarding {
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+#screen-onboarding.active { display: flex; }
+
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--terra);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.logo span { color: var(--sun); }
+
+.logo-sub {
+  font-size: 14px;
+  color: var(--text-faint);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.niche-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 520px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.niche-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.niche-card:hover { border-color: var(--sun); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.niche-card.selected { border-color: var(--terra); background: var(--terra-light); }
+
+.niche-emoji { font-size: 36px; margin-bottom: 10px; display: block; }
+.niche-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.niche-desc { font-size: 12px; color: var(--text-faint); line-height: 1.5; }
+
+.btn-start {
+  background: var(--terra);
+  color: white;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(201,75,44,0.35);
+}
+
+.btn-start:hover { background: #b03d22; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(201,75,44,0.45); }
+
+/* ══════════════════════ MAIN APP ══ */
+#screen-app {
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+}
+#screen-app.active { display: flex; }
+
+/* TOP BAR */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(28,18,8,0.04);
+}
+
+.topbar-logo { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 900; color: var(--terra); }
+.topbar-logo span { color: var(--sun); }
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sun-light);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sun);
+}
+
+.xp-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--lime-light);
+  border: 1px solid rgba(92,184,92,0.3);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lime);
+}
+
+/* PROGRESS BAR */
+.progress-wrap {
+  background: var(--bg2);
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--terra), var(--sun));
+  border-radius: 50px;
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-faint);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.tab .tab-icon { font-size: 18px; }
+.tab:hover { color: var(--terra); }
+.tab.active { color: var(--terra); border-bottom-color: var(--terra); }
+
+/* CONTENT */
+.content {
+  flex: 1;
+  padding: 24px 16px 100px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── FLASHCARD ── */
+.flashcard-wrap {
+  perspective: 1200px;
+  margin-bottom: 24px;
+}
+
+.flashcard {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.flashcard.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  border: 2px solid var(--border);
+}
+
+.card-back { transform: rotateY(180deg); background: linear-gradient(135deg, #fff5e6, #fff); }
+
+.card-lang {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 16px;
+}
+
+.card-word {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.card-back .card-word { color: var(--terra); }
+
+.card-pronunciation {
+  font-size: 14px;
+  color: var(--text-faint);
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.card-example {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 8px;
+}
+
+.card-hint {
+  position: absolute;
+  bottom: 16px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.category-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--sun-light);
+  color: var(--sun);
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid rgba(245,166,35,0.3);
+}
+
+/* CARD ACTIONS */
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.card-btn {
+  padding: 13px;
+  border-radius: 12px;
+  border: 2px solid;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-btn .btn-icon { font-size: 20px; }
+.card-btn.skip { border-color: var(--border); color: var(--text-muted); background: var(--surface); }
+.card-btn.hard { border-color: rgba(201,75,44,0.3); color: var(--terra); background: var(--terra-light); }
+.card-btn.easy { border-color: rgba(92,184,92,0.3); color: var(--lime); background: var(--lime-light); }
+.card-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+/* ── QUIZ ── */
+.quiz-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.quiz-question {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.quiz-sub {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.quiz-type-badge {
+  display: inline-block;
+  background: var(--ocean-light);
+  color: var(--ocean);
+  padding: 3px 12px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  width: 100%;
+  text-align: center;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.option-btn {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-btn:hover:not(:disabled) { border-color: var(--ocean); background: var(--ocean-light); transform: translateY(-1px); }
+.option-btn.correct { border-color: var(--lime); background: var(--lime-light); color: var(--lime); font-weight: 700; }
+.option-btn.wrong { border-color: var(--terra); background: var(--terra-light); color: var(--terra); }
+.option-btn:disabled { cursor: default; }
+
+.feedback-box {
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  display: none;
+}
+
+.feedback-box.correct { background: var(--lime-light); border: 1px solid rgba(92,184,92,0.3); color: #2d6b2d; }
+.feedback-box.wrong { background: var(--terra-light); border: 1px solid rgba(201,75,44,0.3); color: var(--terra); }
+
+.next-btn {
+  width: 100%;
+  margin-top: 14px;
+  background: var(--terra);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+.next-btn:hover { background: #b03d22; }
+
+/* ── SCHREIBEN ── */
+.write-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.write-question {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.write-hint { font-size: 13px; color: var(--text-faint); margin-bottom: 20px; }
+
+.write-input {
+  width: 100%;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+
+.write-input:focus { border-color: var(--ocean); }
+.write-input.correct { border-color: var(--lime); background: var(--lime-light); }
+.write-input.wrong { border-color: var(--terra); background: var(--terra-light); }
+
+.write-submit {
+  background: var(--ocean);
+  color: white;
+  border: none;
+  padding: 13px 32px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.write-submit:hover { background: #155a8a; }
+
+/* ── FORTSCHRITT ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-value { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.vocab-list {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.vocab-list-header {
+  padding: 16px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.vocab-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light, #f0e8d8);
+  gap: 16px;
+  transition: background 0.15s;
+}
+
+.vocab-item:last-child { border-bottom: none; }
+.vocab-item:hover { background: var(--bg2); }
+
+.vocab-es { font-weight: 600; font-size: 15px; flex: 1; }
+.vocab-de { color: var(--text-muted); font-size: 14px; flex: 1; }
+
+.vocab-status {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+.vocab-status.learned { background: var(--lime); }
+.vocab-status.learning { background: var(--sun); }
+.vocab-status.new { background: var(--border); }
+
+/* ── KI CHAT ── */
+.ai-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.ai-header {
+  background: linear-gradient(135deg, var(--terra), #e05a38);
+  color: white;
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-messages {
+  height: 280px;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  animation: msgIn 0.3s ease;
+}
+
+@keyframes msgIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.ai-message.bot {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+  border-radius: 4px 12px 12px 12px;
+}
+
+.ai-message.user {
+  background: var(--terra);
+  color: white;
+  align-self: flex-end;
+  border-radius: 12px 4px 12px 12px;
+}
+
+.ai-message.loading { background: var(--bg2); border: 1px solid var(--border); }
+
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.ai-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ai-input:focus { border-color: var(--terra); }
+
+.ai-send {
+  background: var(--terra);
+  color: white;
+  border: none;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.ai-send:hover { background: #b03d22; }
+.ai-send:disabled { background: var(--border); cursor: default; }
+
+.quick-asks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quick-ask {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+  color: var(--text-muted);
+}
+
+.quick-ask:hover { border-color: var(--terra); color: var(--terra); background: var(--terra-light); }
+
+/* ── AUSSPRACHE ── */
+.pron-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.pron-rule { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.pron-example { font-family: 'Fraunces', serif; font-size: 24px; color: var(--terra); margin-bottom: 6px; }
+.pron-explain { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* CATEGORY TABS */
+.cat-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+
+.cat-tab {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.cat-tab:hover { border-color: var(--terra); color: var(--terra); }
+.cat-tab.active { background: var(--terra); color: white; border-color: var(--terra); }
+
+/* CONFETTI / CORRECT ANIMATION */
+@keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
+.pop { animation: pop 0.35s ease; }
+
+/* LOADING DOTS */
+.dots span { animation: blink 1.4s infinite both; }
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+@media (max-width: 480px) {
+  .niche-grid { grid-template-columns: 1fr; }
+  .options-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ ONBOARDING ══ -->
+<div id="screen-onboarding" class="screen active">
+  <div class="logo">¡Habla!<span>!</span></div>
+  <div class="logo-sub">Spanisch lernen · kostenlos</div>
+
+  <p style="font-size:15px; color:var(--text-muted); margin-bottom:28px; text-align:center; max-width:340px; line-height:1.7">
+    Wähle dein Lernziel – die Vokabeln und Übungen werden darauf zugeschnitten.
+  </p>
+
+  <div class="niche-grid" style="grid-template-columns: repeat(2,1fr); max-width:560px">
+    <div class="niche-card" onclick="selectNiche('urlaub', this)">
+      <span class="niche-emoji">🏖️</span>
+      <div class="niche-title">Urlaub & Reisen</div>
+      <div class="niche-desc">Hotel, Strand, Transport, Sehenswürdigkeiten</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('alltag', this)">
+      <span class="niche-emoji">🛒</span>
+      <div class="niche-title">Alltag & Einkaufen</div>
+      <div class="niche-desc">Supermarkt, Restaurant, Apotheke, Bank</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('grundwortschatz', this)">
+      <span class="niche-emoji">📚</span>
+      <div class="niche-title">Grundwortschatz</div>
+      <div class="niche-desc">Die 200 wichtigsten Wörter für Anfänger</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('social', this)">
+      <span class="niche-emoji">💬</span>
+      <div class="niche-title">Smalltalk & Soziales</div>
+      <div class="niche-desc">Begrüßungen, Kennenlernen, Höflichkeit</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('beruf', this)">
+      <span class="niche-emoji">💼</span>
+      <div class="niche-title">Beruf & Business</div>
+      <div class="niche-desc">Meeting, Vertrag, Kunde, Präsentation</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('kinder', this)">
+      <span class="niche-emoji">🧒</span>
+      <div class="niche-title">Spanisch für Kinder</div>
+      <div class="niche-desc">Tiere, Farben, Zahlen, Familie, Schule</div>
+    </div>
+    <div class="niche-card" onclick="selectNiche('medizin', this)" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width:100%">
+      <span class="niche-emoji">🏥</span>
+      <div class="niche-title">Medizin & Gesundheit</div>
+      <div class="niche-desc">Arzt, Symptome, Notfall, Apotheke</div>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startApp()">Jetzt starten 🚀</button>
+</div>
+
+<!-- ══════════════════ MAIN APP ══ -->
+<div id="screen-app" class="screen">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">¡Habla!</div>
+    <div style="display:flex; gap:10px; align-items:center">
+      <button onclick="showNicheSwitcher()" style="background:var(--bg2); border:1px solid var(--border); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
+        onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
+        id="nicheBtn">🌍 Nische</button>
+      <div class="streak-badge">🔥 <span id="streakCount">0</span></div>
+      <div class="xp-badge">⭐ <span id="xpCount">0</span> XP</div>
+    </div>
+  </div>
+
+  <!-- NISCHE SWITCHER MODAL -->
+  <div id="nicheSwitcherOverlay" style="display:none; position:fixed; inset:0; background:rgba(28,18,8,0.5); z-index:200; align-items:center; justify-content:center; padding:20px">
+    <div style="background:var(--surface); border-radius:var(--radius); padding:28px; max-width:480px; width:100%; box-shadow:var(--shadow-lg)">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+        <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:600">Nische wechseln</div>
+        <button onclick="hideNicheSwitcher()" style="background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-faint); line-height:1">×</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.6">
+        ⚠️ Dein aktueller Vokabel-Fortschritt wird gespeichert. XP & Streak bleiben erhalten.
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+        <div class="niche-card" onclick="switchNiche('urlaub', this)" id="nsCard-urlaub">
+          <span class="niche-emoji">🏖️</span>
+          <div class="niche-title">Urlaub & Reisen</div>
+          <div class="niche-desc">Hotel, Strand, Transport</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('alltag', this)" id="nsCard-alltag">
+          <span class="niche-emoji">🛒</span>
+          <div class="niche-title">Alltag & Einkaufen</div>
+          <div class="niche-desc">Supermarkt, Restaurant, Bank</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('grundwortschatz', this)" id="nsCard-grundwortschatz">
+          <span class="niche-emoji">📚</span>
+          <div class="niche-title">Grundwortschatz</div>
+          <div class="niche-desc">Die 200 wichtigsten Wörter</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('social', this)" id="nsCard-social">
+          <span class="niche-emoji">💬</span>
+          <div class="niche-title">Smalltalk & Soziales</div>
+          <div class="niche-desc">Begrüßungen, Kennenlernen</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('beruf', this)" id="nsCard-beruf">
+          <span class="niche-emoji">💼</span>
+          <div class="niche-title">Beruf & Business</div>
+          <div class="niche-desc">Meeting, Vertrag, Kunde</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('kinder', this)" id="nsCard-kinder">
+          <span class="niche-emoji">🧒</span>
+          <div class="niche-title">Für Kinder</div>
+          <div class="niche-desc">Tiere, Farben, Zahlen</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('medizin', this)" id="nsCard-medizin" style="grid-column:1/-1">
+          <span class="niche-emoji">🏥</span>
+          <div class="niche-title">Medizin & Gesundheit</div>
+          <div class="niche-desc">Arzt, Symptome, Notfall, Apotheke</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progressLabel">Fortschritt heute</span>
+      <span id="progressPct">0 / 10</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" style="overflow-x:auto; scrollbar-width:none">
+    <div class="tab active" onclick="showTab('flashcard', this)">
+      <span class="tab-icon">🃏</span>Karten
+    </div>
+    <div class="tab" onclick="showTab('quiz', this)">
+      <span class="tab-icon">🎯</span>Quiz
+    </div>
+    <div class="tab" onclick="showTab('schreiben', this)">
+      <span class="tab-icon">✍️</span>Schreiben
+    </div>
+    <div class="tab" onclick="showTab('fortschritt', this)">
+      <span class="tab-icon">📊</span>Stats
+    </div>
+    <div class="tab" onclick="showTab('leaderboard', this)">
+      <span class="tab-icon">🏆</span>Rangliste
+    </div>
+    <div class="tab" onclick="showTab('ki', this)">
+      <span class="tab-icon">🤖</span>KI-Hilfe
+    </div>
+  </div>
+
+  <!-- CONTENT AREAS -->
+  <div class="content">
+
+    <!-- FLASHCARDS -->
+    <div id="tab-flashcard" class="tab-content" style="display:block">
+      <div class="section-title">🃏 Vokabelkarten</div>
+      <div class="cat-tabs" id="catTabs"></div>
+
+      <div class="flashcard-wrap">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="card-face card-front">
+            <div class="card-lang">🇪🇸 Spanisch</div>
+            <div class="card-word" id="cardWordEs">—</div>
+            <div class="card-pronunciation" id="cardPronun">—</div>
+            <div class="category-badge" id="cardCat">—</div>
+            <button onclick="event.stopPropagation(); speakBtn(document.getElementById('cardWordEs').textContent, this)"
+              style="position:absolute; bottom:16px; right:16px; background:var(--sun-light); border:1px solid rgba(245,166,35,0.3); border-radius:50px; padding:6px 14px; font-size:13px; cursor:pointer; color:var(--sun); font-weight:600; transition:all 0.2s"
+              onmouseover="this.style.background='var(--sun)';this.style.color='white'"
+              onmouseout="this.style.background='var(--sun-light)';this.style.color='var(--sun)'">🔊 Anhören</button>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-lang">🇩🇪 Deutsch</div>
+            <div class="card-word" id="cardWordDe">—</div>
+            <div class="card-example" id="cardExample">—</div>
+            <button onclick="event.stopPropagation(); speakBtn(document.getElementById('cardWordEs').textContent, this)"
+              style="position:absolute; bottom:16px; right:16px; background:var(--terra-light); border:1px solid rgba(201,75,44,0.2); border-radius:50px; padding:6px 14px; font-size:13px; cursor:pointer; color:var(--terra); font-weight:600; transition:all 0.2s"
+              onmouseover="this.style.background='var(--terra)';this.style.color='white'"
+              onmouseout="this.style.background='var(--terra-light)';this.style.color='var(--terra)'">🔊 Nochmal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions" id="cardActions">
+        <button class="card-btn skip" onclick="nextCard('skip')">
+          <span class="btn-icon">⏭</span>Überspringen
+        </button>
+        <button class="card-btn hard" onclick="nextCard('hard')">
+          <span class="btn-icon">😅</span>Schwer
+        </button>
+        <button class="card-btn easy" onclick="nextCard('easy')">
+          <span class="btn-icon">✅</span>Gewusst!
+        </button>
+      </div>
+
+      <!-- AUSSPRACHE TIPPS -->
+      <div class="section-title" style="margin-top:8px">🔊 Aussprache-Tipps</div>
+      <div id="pronCards"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="tab-quiz" class="tab-content" style="display:none">
+      <div class="section-title">🎯 Multiple Choice Quiz</div>
+      <div class="quiz-card">
+        <div class="quiz-type-badge" id="quizTypeBadge">Übersetze ins Deutsche</div>
+        <div class="quiz-question" id="quizQuestion">—</div>
+        <div class="quiz-sub" id="quizSub"></div>
+        <div style="text-align:center; margin-bottom:16px">
+          <button id="quizSpeakBtn" onclick="speakBtn(document.getElementById('quizQuestion').textContent, this)"
+            style="background:var(--sun-light); border:1px solid rgba(245,166,35,0.3); border-radius:50px; padding:7px 18px; font-size:13px; cursor:pointer; color:var(--sun); font-weight:600; transition:all 0.2s; display:none"
+            onmouseover="this.style.background='var(--sun)';this.style.color='white'"
+            onmouseout="this.style.background='var(--sun-light)';this.style.color='var(--sun)'">🔊 Anhören</button>
+        </div>
+        <div class="options-grid" id="quizOptions"></div>
+        <div class="feedback-box" id="feedbackBox"></div>
+        <button class="next-btn" id="nextBtn" onclick="nextQuiz()">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- SCHREIBEN -->
+    <div id="tab-schreiben" class="tab-content" style="display:none">
+      <div class="section-title">✍️ Tipp das Wort</div>
+      <div class="write-card">
+        <div class="write-hint" id="writeHint">Wie heißt das auf Spanisch?</div>
+        <div class="write-question" id="writeQuestion">—</div>
+        <input type="text" class="write-input" id="writeInput"
+          placeholder="Spanisch eingeben …"
+          oninput="this.value = this.value"
+          onkeydown="if(event.key==='Enter') checkWrite()">
+        <br>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:4px">
+          <button class="write-submit" onclick="checkWrite()">Prüfen ✓</button>
+          <button id="writeSpeakBtn" onclick="speakBtn(currentWrite ? currentWrite.es : '', this)"
+            style="background:var(--sun-light); border:1px solid rgba(245,166,35,0.3); border-radius:50px; padding:13px 18px; font-size:14px; cursor:pointer; color:var(--sun); font-weight:600; transition:all 0.2s; display:none"
+            onmouseover="this.style.background='var(--sun)';this.style.color='white'"
+            onmouseout="this.style.background='var(--sun-light)';this.style.color='var(--sun)'">🔊</button>
+        </div>
+        <div class="feedback-box" id="writeFeedback" style="margin-top:14px; text-align:left"></div>
+        <button class="next-btn" id="writeNextBtn" onclick="nextWrite()" style="display:none; margin-top:10px">Nächstes Wort →</button>
+      </div>
+    </div>
+
+    <!-- FORTSCHRITT -->
+    <div id="tab-fortschritt" class="tab-content" style="display:none">
+      <div class="section-title">📊 Dein Fortschritt</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--sun)" id="st-streak">0</div>
+          <div class="stat-label">🔥 Tage-Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--lime)" id="st-xp">0</div>
+          <div class="stat-label">⭐ XP gesamt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--ocean)" id="st-learned">0</div>
+          <div class="stat-label">✅ Gelernt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--terra)" id="st-correct">0%</div>
+          <div class="stat-label">🎯 Trefferquote</div>
+        </div>
+      </div>
+      <div class="vocab-list">
+        <div class="vocab-list-header">Alle Vokabeln – Status</div>
+        <div id="vocabList"></div>
+      </div>
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
+        <button onclick="showCertModal()" style="flex:1; min-width:140px; background:linear-gradient(135deg,var(--sun),#f0b030); color:white; border:none; padding:12px 16px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; box-shadow:0 4px 14px rgba(245,166,35,0.35)">🏅 Zertifikat erhalten</button>
+        <button onclick="showPdfModal()" style="flex:1; min-width:140px; background:linear-gradient(135deg,var(--ocean),#1558a0); color:white; border:none; padding:12px 16px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; box-shadow:0 4px 14px rgba(27,108,168,0.35)">📄 PDF Spickzettel</button>
+      </div>
+      <div style="margin-top:10px; display:flex; gap:10px; align-items:center; justify-content:space-between">
+        <div style="font-size:12px; color:var(--text-faint)">💾 Fortschritt wird automatisch gespeichert</div>
+        <button onclick="resetProgress()" style="background:none; border:1px solid var(--border); padding:8px 16px; border-radius:8px; font-size:12px; color:var(--text-faint); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
+          onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-faint)'">
+          🗑 Fortschritt zurücksetzen
+        </button>
+      </div>
+    </div>
+
+    <!-- KI HILFE -->
+    <div id="tab-ki" class="tab-content" style="display:none">
+      <div class="section-title">🤖 KI-Spanischlehrer</div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px; line-height:1.6">
+        Stell mir Fragen auf Deutsch – ich erkläre Grammatik, übersetze Sätze oder übe mit dir.
+      </p>
+
+      <div class="quick-asks">
+        <div class="quick-ask" onclick="quickAsk('Erkläre mir die Konjugation von „ser" vs „estar"')">ser vs estar?</div>
+        <div class="quick-ask" onclick="quickAsk('Wie bilde ich einen einfachen Satz auf Spanisch?')">Satzaufbau</div>
+        <div class="quick-ask" onclick="quickAsk('Was ist der Unterschied zwischen por und para?')">por vs para</div>
+        <div class="quick-ask" onclick="quickAsk('Schreibe mir 5 typische Urlaubsphrasen auf Spanisch mit Übersetzung')">Urlaubsphrasen</div>
+        <div class="quick-ask" onclick="quickAsk('Übe mit mir ein kurzes Gespräch im Restaurant auf Spanisch')">Restaurant üben</div>
+        <div class="quick-ask" onclick="quickAsk('Erkläre mir das Spanische Alphabet und Aussprache')">Aussprache</div>
+      </div>
+
+      <div class="ai-card">
+        <div class="ai-header">
+          <span>🤖</span>
+          <span>Profe IA – Dein KI-Spanischlehrer</span>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-message bot">
+            ¡Hola! 👋 Ich bin dein KI-Spanischlehrer. Frag mich alles über Spanisch – Grammatik, Vokabeln, Aussprache oder übe einfach mit mir ein Gespräch!
+          </div>
+        </div>
+        <div class="ai-input-row">
+          <input type="text" class="ai-input" id="aiInput"
+            placeholder="Frag mich etwas …"
+            onkeydown="if(event.key==='Enter') sendAiMessage()">
+          <button class="ai-send" id="aiSendBtn" onclick="sendAiMessage()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="tab-leaderboard" class="tab-content" style="display:none">
+      <div class="section-title">🏆 Rangliste</div>
+
+      <!-- EMAIL SAMMLUNG -->
+      <div id="emailPromptBox" style="background:linear-gradient(135deg,var(--terra),#e05a38); border-radius:var(--radius); padding:24px; margin-bottom:20px; color:white; text-align:center">
+        <div style="font-size:28px; margin-bottom:8px">📧</div>
+        <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; margin-bottom:8px">Tägliche Vokabel per E-Mail</div>
+        <div style="font-size:13px; opacity:0.85; margin-bottom:16px; line-height:1.6">Jeden Morgen 3 neue Wörter + dein Lernfortschritt. Kostenlos, jederzeit abmeldbar.</div>
+        <div style="display:flex; gap:8px; max-width:340px; margin:0 auto">
+          <input type="email" id="emailInput" placeholder="deine@email.de"
+            style="flex:1; padding:10px 14px; border-radius:8px; border:none; font-size:14px; font-family:'Outfit',sans-serif; outline:none">
+          <button onclick="subscribeEmail()" style="background:var(--text); color:white; border:none; padding:10px 16px; border-radius:8px; font-family:'Outfit',sans-serif; font-weight:600; cursor:pointer; font-size:14px; white-space:nowrap">Anmelden ✓</button>
+        </div>
+        <div id="emailConfirm" style="margin-top:10px; font-size:13px; display:none">✅ Super! Du erhältst bald deine erste Vokabel.</div>
+      </div>
+
+      <!-- RANGLISTE -->
+      <div style="background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden; margin-bottom:16px">
+        <div style="background:var(--bg2); padding:14px 20px; font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-faint); display:flex; justify-content:space-between">
+          <span>Lernende diese Woche</span>
+          <span>XP</span>
+        </div>
+        <div id="leaderboardList"></div>
+      </div>
+
+      <!-- FREUNDE EINLADEN -->
+      <div style="background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); padding:24px; margin-bottom:16px">
+        <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-bottom:8px">👯 Freunde einladen</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:16px; line-height:1.6">Lerne gemeinsam! Teile deinen persönlichen Link und sieh wer besser ist.</div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--text-muted); margin-bottom:12px; word-break:break-all" id="shareLink">habla-lernen.de/?ref=...</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button onclick="copyInviteLink()" style="background:var(--terra); color:white; border:none; padding:11px 20px; border-radius:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; flex:1">🔗 Link kopieren</button>
+          <button onclick="shareWhatsApp()" style="background:#25D366; color:white; border:none; padding:11px 20px; border-radius:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; flex:1">📱 WhatsApp</button>
+          <button onclick="shareNative()" style="background:var(--ocean); color:white; border:none; padding:11px 20px; border-radius:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; flex:1">↗ Teilen</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- ══ ZERTIFIKAT MODAL ══ -->
+  <div id="certModal" style="display:none; position:fixed; inset:0; background:rgba(28,18,8,0.7); z-index:300; align-items:center; justify-content:center; padding:20px">
+    <div style="background:var(--surface); border-radius:var(--radius); max-width:500px; width:100%; box-shadow:var(--shadow-lg); overflow:hidden">
+      <div id="certContent" style="padding:40px; text-align:center; background:linear-gradient(135deg, #fffbf0, #fff5e0); border:3px solid var(--sun); border-radius:var(--radius); margin:16px; position:relative">
+        <div style="position:absolute; top:12px; left:12px; font-size:28px; opacity:0.3">⭐</div>
+        <div style="position:absolute; top:12px; right:12px; font-size:28px; opacity:0.3">⭐</div>
+        <div style="font-size:40px; margin-bottom:8px">🏅</div>
+        <div style="font-family:'Fraunces',serif; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); margin-bottom:6px">Zertifikat</div>
+        <div style="font-family:'Fraunces',serif; font-size:28px; font-weight:900; color:var(--terra); margin-bottom:4px">¡Felicidades!</div>
+        <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px">hat erfolgreich abgeschlossen:</div>
+        <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--text); margin-bottom:6px" id="certNiche">—</div>
+        <div style="font-size:14px; color:var(--text-muted); margin-bottom:20px" id="certStats">—</div>
+        <div style="width:80%; height:2px; background:linear-gradient(90deg, transparent, var(--sun), transparent); margin:0 auto 20px"></div>
+        <div style="font-family:'Fraunces',serif; font-style:italic; font-size:16px; color:var(--text-muted)">¡Habla! Spanisch Lern-App</div>
+        <div style="font-size:11px; color:var(--text-faint); margin-top:6px" id="certDate">—</div>
+      </div>
+      <div style="padding:0 16px 16px; display:flex; gap:10px">
+        <button onclick="downloadCert()" style="flex:1; background:var(--terra); color:white; border:none; padding:13px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:14px; cursor:pointer">📥 Als PNG speichern</button>
+        <button onclick="shareCert()" style="flex:1; background:var(--ocean); color:white; border:none; padding:13px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:14px; cursor:pointer">↗ Teilen</button>
+        <button onclick="closeCertModal()" style="background:var(--bg); border:1px solid var(--border); padding:13px 16px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:14px; cursor:pointer; color:var(--text-muted)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PDF SPICKZETTEL MODAL ══ -->
+  <div id="pdfModal" style="display:none; position:fixed; inset:0; background:rgba(28,18,8,0.7); z-index:300; align-items:center; justify-content:center; padding:20px">
+    <div style="background:var(--surface); border-radius:var(--radius); max-width:480px; width:100%; box-shadow:var(--shadow-lg); padding:28px">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+        <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:600">📄 PDF-Spickzettel</div>
+        <button onclick="closePdfModal()" style="background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-faint)">×</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.6">Alle Vokabeln der aktuellen Nische als druckbarer Spickzettel – perfekt für unterwegs.</p>
+      <div id="pdfPreview" style="background:white; border:2px solid var(--border); border-radius:8px; padding:20px; max-height:300px; overflow-y:auto; font-size:12px; margin-bottom:16px"></div>
+      <div style="display:flex; gap:10px">
+        <button onclick="printSpickzettel()" style="flex:1; background:var(--terra); color:white; border:none; padding:13px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:14px; cursor:pointer">🖨 Drucken / PDF</button>
+        <button onclick="closePdfModal()" style="background:var(--bg); border:1px solid var(--border); padding:13px 16px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:14px; cursor:pointer; color:var(--text-muted)">✕</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /screen-app -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
+const VOCAB = {
+  urlaub: [
+    { es:'el hotel', de:'das Hotel', pron:'[el o-TEL]', example:'Ich wohne im Hotel.', cat:'🏨 Unterkunft' },
+    { es:'la playa', de:'der Strand', pron:'[la PLA-ya]', example:'La playa es bonita.', cat:'🏖️ Strand' },
+    { es:'el aeropuerto', de:'der Flughafen', pron:'[el ae-ro-PWER-to]', example:'El aeropuerto está lejos.', cat:'✈️ Transport' },
+    { es:'el billete', de:'das Ticket / die Fahrkarte', pron:'[el bi-YE-te]', example:'Quiero un billete.', cat:'✈️ Transport' },
+    { es:'la maleta', de:'der Koffer', pron:'[la ma-LE-ta]', example:'Mi maleta es grande.', cat:'🧳 Reise' },
+    { es:'el pasaporte', de:'der Reisepass', pron:'[el pa-sa-POR-te]', example:'Necesito mi pasaporte.', cat:'🧳 Reise' },
+    { es:'la reserva', de:'die Reservierung', pron:'[la re-SER-ba]', example:'Tengo una reserva.', cat:'🏨 Unterkunft' },
+    { es:'el restaurante', de:'das Restaurant', pron:'[el res-tau-RAN-te]', example:'El restaurante es bueno.', cat:'🍽️ Essen' },
+    { es:'la cuenta', de:'die Rechnung', pron:'[la KWEN-ta]', example:'La cuenta, por favor.', cat:'🍽️ Essen' },
+    { es:'el mapa', de:'die Karte / der Stadtplan', pron:'[el MA-pa]', example:'¿Tienes un mapa?', cat:'🗺️ Navigation' },
+    { es:'la calle', de:'die Straße', pron:'[la KA-ye]', example:'¿Cómo se llama esta calle?', cat:'🗺️ Navigation' },
+    { es:'la farmacia', de:'die Apotheke', pron:'[la far-MA-thia]', example:'Busco una farmacia.', cat:'🏥 Gesundheit' },
+    { es:'el médico', de:'der Arzt', pron:'[el ME-di-ko]', example:'Necesito un médico.', cat:'🏥 Gesundheit' },
+    { es:'el taxi', de:'das Taxi', pron:'[el TAK-si]', example:'Quiero un taxi.', cat:'✈️ Transport' },
+    { es:'la playa', de:'der Strand', pron:'[la PLA-ya]', example:'Vamos a la playa.', cat:'🏖️ Strand' },
+    { es:'el museo', de:'das Museum', pron:'[el mu-SE-o]', example:'El museo es interesante.', cat:'🗺️ Navigation' },
+  ],
+  alltag: [
+    { es:'el supermercado', de:'der Supermarkt', pron:'[el su-per-mer-KA-do]', example:'Voy al supermercado.', cat:'🛒 Einkaufen' },
+    { es:'el pan', de:'das Brot', pron:'[el pan]', example:'Quiero pan, por favor.', cat:'🛒 Einkaufen' },
+    { es:'la leche', de:'die Milch', pron:'[la LE-tche]', example:'¿Tienes leche?', cat:'🛒 Einkaufen' },
+    { es:'el dinero', de:'das Geld', pron:'[el di-NE-ro]', example:'No tengo dinero.', cat:'💰 Bank' },
+    { es:'la tarjeta', de:'die Karte (Kreditkarte)', pron:'[la tar-HE-ta]', example:'¿Acepta tarjeta?', cat:'💰 Bank' },
+    { es:'la tienda', de:'das Geschäft / der Laden', pron:'[la TIEN-da]', example:'La tienda cierra a las ocho.', cat:'🛒 Einkaufen' },
+    { es:'el precio', de:'der Preis', pron:'[el PRE-thio]', example:'¿Cuánto es el precio?', cat:'🛒 Einkaufen' },
+    { es:'el banco', de:'die Bank', pron:'[el BAN-ko]', example:'Necesito ir al banco.', cat:'💰 Bank' },
+    { es:'el mercado', de:'der Markt', pron:'[el mer-KA-do]', example:'El mercado es grande.', cat:'🛒 Einkaufen' },
+    { es:'la fruta', de:'das Obst', pron:'[la FRU-ta]', example:'Me gusta la fruta.', cat:'🍎 Lebensmittel' },
+    { es:'la carne', de:'das Fleisch', pron:'[la KAR-ne]', example:'No como carne.', cat:'🍎 Lebensmittel' },
+    { es:'el agua', de:'das Wasser', pron:'[el A-gwa]', example:'Un vaso de agua, por favor.', cat:'🍎 Lebensmittel' },
+    { es:'la farmacia', de:'die Apotheke', pron:'[la far-MA-thia]', example:'La farmacia está cerrada.', cat:'🏥 Gesundheit' },
+    { es:'el cajero', de:'der Geldautomat', pron:'[el ka-HE-ro]', example:'¿Dónde está el cajero?', cat:'💰 Bank' },
+    { es:'el recibo', de:'der Kassenbon', pron:'[el re-THI-bo]', example:'¿Me da el recibo?', cat:'🛒 Einkaufen' },
+  ],
+  grundwortschatz: [
+    { es:'hola', de:'Hallo', pron:'[O-la]', example:'¡Hola! ¿Cómo estás?', cat:'👋 Begrüßung' },
+    { es:'gracias', de:'Danke', pron:'[GRA-thias]', example:'¡Muchas gracias!', cat:'👋 Begrüßung' },
+    { es:'por favor', de:'bitte', pron:'[por fa-BOR]', example:'Un café, por favor.', cat:'👋 Begrüßung' },
+    { es:'sí / no', de:'ja / nein', pron:'[si / no]', example:'Sí, me gusta.', cat:'💬 Grundlagen' },
+    { es:'buenos días', de:'Guten Morgen', pron:'[BWE-nos DI-as]', example:'¡Buenos días!', cat:'👋 Begrüßung' },
+    { es:'buenas noches', de:'Gute Nacht', pron:'[BWE-nas NO-tches]', example:'¡Buenas noches!', cat:'👋 Begrüßung' },
+    { es:'¿cómo estás?', de:'Wie geht es dir?', pron:'[KO-mo es-TAS]', example:'¡Hola! ¿Cómo estás?', cat:'💬 Grundlagen' },
+    { es:'me llamo …', de:'Ich heiße …', pron:'[me YA-mo]', example:'Me llamo Ana.', cat:'💬 Grundlagen' },
+    { es:'no entiendo', de:'Ich verstehe nicht', pron:'[no en-TIEN-do]', example:'Perdón, no entiendo.', cat:'💬 Grundlagen' },
+    { es:'¿habla alemán?', de:'Sprechen Sie Deutsch?', pron:'[A-bla a-le-MAN]', example:'¿Habla alemán, por favor?', cat:'💬 Grundlagen' },
+    { es:'pequeño / grande', de:'klein / groß', pron:'[pe-KE-nyo / GRAN-de]', example:'Una habitación grande.', cat:'📐 Beschreibung' },
+    { es:'mucho / poco', de:'viel / wenig', pron:'[MU-tcho / PO-ko]', example:'Tengo mucho trabajo.', cat:'📐 Beschreibung' },
+    { es:'aquí / allí', de:'hier / dort', pron:'[a-KI / a-YI]', example:'Estoy aquí.', cat:'🗺️ Ort' },
+    { es:'hoy / mañana', de:'heute / morgen', pron:'[oy / ma-NYA-na]', example:'Hasta mañana.', cat:'📅 Zeit' },
+    { es:'adiós', de:'Auf Wiedersehen', pron:'[a-DIOS]', example:'¡Adiós! ¡Hasta luego!', cat:'👋 Begrüßung' },
+  ],
+  social: [
+    { es:'¿cómo te llamas?', de:'Wie heißt du?', pron:'[KO-mo te YA-mas]', example:'¡Hola! ¿Cómo te llamas?', cat:'💬 Kennenlernen' },
+    { es:'encantado/a', de:'Freut mich!', pron:'[en-kan-TA-do]', example:'Encantado de conocerte.', cat:'💬 Kennenlernen' },
+    { es:'¿de dónde eres?', de:'Woher kommst du?', pron:'[de DON-de E-res]', example:'¿De dónde eres tú?', cat:'💬 Kennenlernen' },
+    { es:'soy de Alemania', de:'Ich komme aus Deutschland', pron:'[soy de a-le-MA-nia]', example:'Soy de Alemania.', cat:'💬 Kennenlernen' },
+    { es:'¿cuántos años tienes?', de:'Wie alt bist du?', pron:'[KWAN-tos A-nyos TIEN-es]', example:'¿Cuántos años tienes?', cat:'💬 Kennenlernen' },
+    { es:'tengo … años', de:'Ich bin … Jahre alt', pron:'[TEN-go A-nyos]', example:'Tengo treinta años.', cat:'💬 Kennenlernen' },
+    { es:'me gusta', de:'Ich mag / Mir gefällt', pron:'[me GUS-ta]', example:'Me gusta el fútbol.', cat:'❤️ Vorlieben' },
+    { es:'no me gusta', de:'Ich mag nicht', pron:'[no me GUS-ta]', example:'No me gusta el frío.', cat:'❤️ Vorlieben' },
+    { es:'perdona', de:'Entschuldigung', pron:'[per-DO-na]', example:'Perdona, ¿puedes repetir?', cat:'🙏 Höflichkeit' },
+    { es:'de nada', de:'Bitte (nach Danke)', pron:'[de NA-da]', example:'Gracias. – De nada!', cat:'🙏 Höflichkeit' },
+    { es:'¿puedes ayudarme?', de:'Kannst du mir helfen?', pron:'[PWIE-des a-yu-DAR-me]', example:'¿Puedes ayudarme, por favor?', cat:'🙏 Höflichkeit' },
+    { es:'¿hablas inglés?', de:'Sprichst du Englisch?', pron:'[A-blas in-GLES]', example:'¿Hablas inglés o alemán?', cat:'💬 Kennenlernen' },
+    { es:'un poco', de:'ein bisschen', pron:'[un PO-ko]', example:'Hablo español un poco.', cat:'💬 Kennenlernen' },
+    { es:'con mucho gusto', de:'sehr gerne / mit Vergnügen', pron:'[kon MU-tcho GUS-to]', example:'Con mucho gusto te ayudo.', cat:'🙏 Höflichkeit' },
+    { es:'¡salud!', de:'Prost! / Gesundheit!', pron:'[sa-LUD]', example:'¡Salud! ¡Por nosotros!', cat:'🥂 Feiern' },
+  ],
+};
+
+const PRON_TIPS = [
+  { rule:'„LL" klingt wie J', example:'llama, calle, villa', explain:'Im Spanischen klingt „ll" wie das deutsche „j". „Calle" sprichst du [KA-je] aus.' },
+  { rule:'„J" klingt wie CH', example:'jardín, julio, trabajar', explain:'Das spanische „j" ist ein kräftiges „ch" (wie in „Bach"). „Jardín" = [char-DIN].' },
+  { rule:'„H" ist stumm', example:'hotel, hola, hablar', explain:'Das „h" wird im Spanischen nie ausgesprochen. „Hola" = [O-la].' },
+  { rule:'„V" klingt wie B', example:'vino, vivir, verano', explain:'Im Spanischen klingt „v" wie ein weiches „b". „Vino" = [BI-no].' },
+  { rule:'Akzente zeigen Betonung', example:'café, música, también', explain:'Ein Akzent (´) zeigt, welche Silbe betont wird: café = [ka-FE].' },
+];
+
+// ── NEUE NISCHEN ──
+VOCAB.beruf = [
+  { es:'la reunión', de:'das Meeting / die Besprechung', pron:'[la re-u-NION]', example:'Tengo una reunión a las diez.', cat:'💼 Büro' },
+  { es:'el correo electrónico', de:'die E-Mail', pron:'[el ko-RE-o e-lek-TRO-ni-ko]', example:'Te mando un correo.', cat:'💼 Büro' },
+  { es:'el contrato', de:'der Vertrag', pron:'[el kon-TRA-to]', example:'Por favor, firme el contrato.', cat:'📋 Dokumente' },
+  { es:'la factura', de:'die Rechnung / die Invoice', pron:'[la fak-TU-ra]', example:'¿Puede enviar la factura?', cat:'💰 Finanzen' },
+  { es:'el presupuesto', de:'das Budget / der Kostenvoranschlag', pron:'[el pre-su-PWES-to]', example:'El presupuesto es limitado.', cat:'💰 Finanzen' },
+  { es:'el plazo', de:'die Frist / der Termin', pron:'[el PLA-tho]', example:'El plazo es el viernes.', cat:'📅 Zeit' },
+  { es:'el cliente', de:'der Kunde', pron:'[el kli-EN-te]', example:'El cliente está satisfecho.', cat:'🤝 Geschäft' },
+  { es:'el proveedor', de:'der Lieferant', pron:'[el pro-be-e-DOR]', example:'Nuestro proveedor es fiable.', cat:'🤝 Geschäft' },
+  { es:'la empresa', de:'das Unternehmen / die Firma', pron:'[la em-PRE-sa]', example:'Trabajo en una empresa grande.', cat:'💼 Büro' },
+  { es:'el jefe / la jefa', de:'der Chef / die Chefin', pron:'[el HE-fe]', example:'Mi jefe es muy amable.', cat:'👥 Personen' },
+  { es:'el colega', de:'der Kollege', pron:'[el ko-LE-ga]', example:'Mi colega me ayuda mucho.', cat:'👥 Personen' },
+  { es:'la oferta', de:'das Angebot', pron:'[la o-FER-ta]', example:'Tenemos una oferta especial.', cat:'🤝 Geschäft' },
+  { es:'negociar', de:'verhandeln', pron:'[ne-go-THIAR]', example:'Necesitamos negociar el precio.', cat:'🤝 Geschäft' },
+  { es:'el informe', de:'der Bericht / der Report', pron:'[el in-FOR-me]', example:'El informe está listo.', cat:'📋 Dokumente' },
+  { es:'la conferencia', de:'die Konferenz', pron:'[la kon-fe-REN-thia]', example:'La conferencia empieza a las nueve.', cat:'💼 Büro' },
+];
+
+VOCAB.kinder = [
+  { es:'el gato', de:'die Katze', pron:'[el GA-to]', example:'El gato es suave.', cat:'🐾 Tiere' },
+  { es:'el perro', de:'der Hund', pron:'[el PE-ro]', example:'El perro ladra fuerte.', cat:'🐾 Tiere' },
+  { es:'el pájaro', de:'der Vogel', pron:'[el PA-ha-ro]', example:'El pájaro vuela alto.', cat:'🐾 Tiere' },
+  { es:'los colores', de:'die Farben', pron:'[los ko-LO-res]', example:'¿De qué color es?', cat:'🎨 Farben' },
+  { es:'rojo', de:'rot', pron:'[RO-ho]', example:'La manzana es roja.', cat:'🎨 Farben' },
+  { es:'azul', de:'blau', pron:'[a-THUL]', example:'El cielo es azul.', cat:'🎨 Farben' },
+  { es:'verde', de:'grün', pron:'[BER-de]', example:'La hierba es verde.', cat:'🎨 Farben' },
+  { es:'amarillo', de:'gelb', pron:'[a-ma-RI-yo]', example:'El sol es amarillo.', cat:'🎨 Farben' },
+  { es:'los números', de:'die Zahlen', pron:'[los NU-me-ros]', example:'¿Sabes los números?', cat:'🔢 Zahlen' },
+  { es:'uno, dos, tres', de:'eins, zwei, drei', pron:'[U-no, dos, tres]', example:'Uno, dos, tres – ¡ya!', cat:'🔢 Zahlen' },
+  { es:'la familia', de:'die Familie', pron:'[la fa-MI-lia]', example:'Mi familia es grande.', cat:'👨‍👩‍👧 Familie' },
+  { es:'la mamá / el papá', de:'die Mama / der Papa', pron:'[la ma-MA / el pa-PA]', example:'Mi mamá cocina bien.', cat:'👨‍👩‍👧 Familie' },
+  { es:'el colegio', de:'die Schule', pron:'[el ko-LE-hio]', example:'Me gusta el colegio.', cat:'🏫 Schule' },
+  { es:'el libro', de:'das Buch', pron:'[el LI-bro]', example:'Leo un libro cada día.', cat:'🏫 Schule' },
+  { es:'jugar', de:'spielen', pron:'[hu-GAR]', example:'Quiero jugar en el parque.', cat:'🎮 Spaß' },
+];
+
+VOCAB.medizin = [
+  { es:'el médico', de:'der Arzt', pron:'[el ME-di-ko]', example:'Necesito ver al médico.', cat:'👨‍⚕️ Personal' },
+  { es:'el hospital', de:'das Krankenhaus', pron:'[el os-pi-TAL]', example:'El hospital está cerca.', cat:'🏥 Orte' },
+  { es:'me duele', de:'es tut mir weh', pron:'[me DWE-le]', example:'Me duele la cabeza.', cat:'🤒 Symptome' },
+  { es:'la cabeza', de:'der Kopf', pron:'[la ka-BE-tha]', example:'Tengo dolor de cabeza.', cat:'🦴 Körper' },
+  { es:'el estómago', de:'der Magen / der Bauch', pron:'[el es-TO-ma-go]', example:'Me duele el estómago.', cat:'🦴 Körper' },
+  { es:'la fiebre', de:'das Fieber', pron:'[la FIE-bre]', example:'Tengo mucha fiebre.', cat:'🤒 Symptome' },
+  { es:'la tos', de:'der Husten', pron:'[la tos]', example:'Tengo tos desde hace días.', cat:'🤒 Symptome' },
+  { es:'el medicamento', de:'das Medikament', pron:'[el me-di-ka-MEN-to]', example:'¿Tiene este medicamento?', cat:'💊 Medizin' },
+  { es:'la receta', de:'das Rezept', pron:'[la re-THE-ta]', example:'Necesito una receta.', cat:'💊 Medizin' },
+  { es:'alérgico/a', de:'allergisch', pron:'[a-LER-hi-ko]', example:'Soy alérgico a la penicilina.', cat:'⚠️ Wichtig' },
+  { es:'el seguro', de:'die Krankenversicherung', pron:'[el se-GU-ro]', example:'¿Acepta mi seguro?', cat:'📋 Verwaltung' },
+  { es:'la cita', de:'der Termin', pron:'[la THI-ta]', example:'Tengo cita a las tres.', cat:'📋 Verwaltung' },
+  { es:'la sangre', de:'das Blut', pron:'[la SAN-gre]', example:'Necesito un análisis de sangre.', cat:'🔬 Untersuchung' },
+  { es:'el dolor', de:'der Schmerz', pron:'[el do-LOR]', example:'El dolor es muy fuerte.', cat:'🤒 Symptome' },
+  { es:'la ambulancia', de:'der Krankenwagen', pron:'[la am-bu-LAN-thia]', example:'¡Llame a la ambulancia!', cat:'🚨 Notfall' },
+];
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let state = {
+  niche: 'urlaub',
+  vocab: [],
+  cardIndex: 0,
+  cardStatus: {}, // { index: 'new'|'learning'|'learned' }
+  xp: 0,
+  streak: 1,
+  dailyDone: 0,
+  dailyGoal: 10,
+  quizTotal: 0,
+  quizCorrect: 0,
+  currentCat: 'all',
+};
+
+// ══════════════════════════════════════════════════════
+// ONBOARDING
+// ══════════════════════════════════════════════════════
+let selectedNiche = 'urlaub';
+
+function selectNiche(key, el) {
+  selectedNiche = key;
+  document.querySelectorAll('.niche-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function startApp() {
+  state.niche = selectedNiche;
+  state.vocab = VOCAB[selectedNiche] || VOCAB['urlaub'];
+  state.cardIndex = 0;
+  state.currentCat = 'all';
+  state.cardStatus = {};
+  state.vocab.forEach((_,i) => state.cardStatus[i] = 'new');
+
+  document.getElementById('screen-onboarding').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+
+  initCatTabs();
+  loadCard();
+  loadQuiz();
+  loadWrite();
+  renderFortschritt();
+  renderPronTips();
+  saveState();
+  showToast('¡Hola! Viel Erfolg beim Lernen 🎉');
+}
+
+// ══════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════
+function showTab(name, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display='none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+name);
+  if (tabEl) tabEl.style.display='block';
+  if (el) el.classList.add('active');
+  
+  if (name==='fortschritt') renderFortschritt();
+  if (name==='quiz') loadQuiz();
+  if (name==='schreiben') loadWrite();
+  if (name==='leaderboard') renderLeaderboard();
+}
+
+// ══════════════════════════════════════════════════════
+// CATEGORY TABS
+// ══════════════════════════════════════════════════════
+function initCatTabs() {
+  const cats = ['all', ...new Set(state.vocab.map(v=>v.cat))];
+  const container = document.getElementById('catTabs');
+  container.innerHTML = '';
+  cats.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'cat-tab' + (c==='all'?' active':'');
+    d.textContent = c==='all'?'Alle':c;
+    d.onclick = () => {
+      state.currentCat = c;
+      document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+      d.classList.add('active');
+      state.cardIndex = 0;
+      loadCard();
+    };
+    container.appendChild(d);
+  });
+  // Reset category to 'all' when initializing
+  state.currentCat = 'all';
+}
+
+function filteredVocab() {
+  if (state.currentCat==='all') return state.vocab;
+  const filtered = state.vocab.filter(v=>v.cat===state.currentCat);
+  // Fallback to all if category is empty (shouldn't happen but safety check)
+  if (filtered.length === 0) {
+    state.currentCat = 'all';
+    return state.vocab;
+  }
+  return filtered;
+}
+
+// ══════════════════════════════════════════════════════
+// FLASHCARDS
+// ══════════════════════════════════════════════════════
+function loadCard() {
+  const vocab = filteredVocab();
+  const cardActions = document.getElementById('cardActions');
+  
+  if (!vocab.length) {
+    // Fallback wenn keine Vokabeln vorhanden
+    document.getElementById('cardWordEs').textContent = '—';
+    document.getElementById('cardPronun').textContent = '';
+    document.getElementById('cardCat').textContent = '';
+    document.getElementById('cardWordDe').textContent = 'Keine Vokabeln';
+    document.getElementById('cardExample').textContent = 'Wechsle die Kategorie oder Nische';
+    if (cardActions) {
+      cardActions.querySelectorAll('button').forEach(btn => btn.disabled = true);
+      cardActions.style.opacity = '0.5';
+    }
+    return;
+  }
+  
+  // Enable buttons
+  if (cardActions) {
+    cardActions.querySelectorAll('button').forEach(btn => btn.disabled = false);
+    cardActions.style.opacity = '1';
+  }
+  
+  const v = vocab[state.cardIndex % vocab.length];
+  const card = document.getElementById('flashcard');
+  card.classList.remove('flipped');
+  document.getElementById('cardWordEs').textContent = v.es;
+  document.getElementById('cardPronun').textContent = v.pron;
+  document.getElementById('cardCat').textContent = v.cat;
+  document.getElementById('cardWordDe').textContent = v.de;
+  document.getElementById('cardExample').textContent = v.example;
+  // Automatisch vorlesen
+  setTimeout(() => speak(v.es), 300);
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard(result) {
+  const vocab = filteredVocab();
+  if (!vocab.length) return;
+  
+  const currentCard = vocab[state.cardIndex % vocab.length];
+  const realIndex = state.vocab.indexOf(currentCard);
+  
+  if (realIndex === -1) return; // Safety check
+  
+  if (result==='easy') {
+    state.cardStatus[realIndex] = 'learned';
+    addXP(10);
+    state.dailyDone++;
+    updateProgress();
+    checkMilestone();
+  } else if (result==='hard') {
+    state.cardStatus[realIndex] = 'learning';
+    addXP(3);
+    state.dailyDone++;
+    updateProgress();
+  }
+  state.cardIndex = (state.cardIndex + 1) % vocab.length;
+  const card = document.getElementById('flashcard');
+  card.style.opacity = '0';
+  card.style.transform = 'translateX(30px)';
+  setTimeout(() => {
+    loadCard();
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '1';
+    card.style.transform = '';
+    setTimeout(() => { card.style.transition=''; }, 350);
+  }, 200);
+}
+
+// ══════════════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════════════
+let currentQuiz = null;
+let quizAnswered = false;
+
+function loadQuiz() {
+  const vocab = state.vocab;
+  if (!vocab || vocab.length < 4) {
+    // Need at least 4 words for quiz
+    document.getElementById('quizQuestion').textContent = 'Nicht genug Vokabeln';
+    document.getElementById('quizSub').textContent = 'Mindestens 4 Vokabeln nötig';
+    document.getElementById('quizOptions').innerHTML = '';
+    return;
+  }
+  
+  const idx = Math.floor(Math.random() * vocab.length);
+  const correct = vocab[idx];
+  const direction = Math.random() > 0.5; // true = es→de, false = de→es
+
+  const wrong = vocab.filter((_,i)=>i!==idx).sort(()=>Math.random()-0.5).slice(0,3);
+  const options = [...wrong, correct].sort(()=>Math.random()-0.5);
+
+  currentQuiz = { correct, direction, idx };
+  quizAnswered = false;
+
+  document.getElementById('quizTypeBadge').textContent = direction ? '🇪🇸 → 🇩🇪 Übersetze ins Deutsche' : '🇩🇪 → 🇪🇸 Übersetze ins Spanische';
+  document.getElementById('quizQuestion').textContent = direction ? correct.es : correct.de;
+  document.getElementById('quizSub').textContent = direction ? correct.pron : '';
+
+  // Sprechen-Button nur bei ES-Fragen zeigen + auto-vorlesen
+  const speakBtn2 = document.getElementById('quizSpeakBtn');
+  if (speakBtn2) {
+    if (direction) {
+      speakBtn2.style.display = 'inline-block';
+      setTimeout(() => speak(correct.es), 300);
+    } else {
+      speakBtn2.style.display = 'none';
+    }
+  }
+
+  const optContainer = document.getElementById('quizOptions');
+  optContainer.innerHTML = '';
+  options.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = direction ? v.de : v.es;
+    btn.onclick = () => checkQuiz(btn, v, correct, direction);
+    optContainer.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function checkQuiz(btn, chosen, correct, direction) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  state.quizTotal++;
+
+  const isCorrect = chosen === correct;
+  const fb = document.getElementById('feedbackBox');
+  const allBtns = document.querySelectorAll('.option-btn');
+
+  allBtns.forEach(b => {
+    b.disabled = true;
+    const isThis = b.textContent === (direction ? correct.de : correct.es);
+    if (isThis) b.classList.add('correct');
+  });
+
+  if (!isCorrect) {
+    btn.classList.add('wrong');
+    fb.className = 'feedback-box wrong';
+    fb.innerHTML = `❌ Leider falsch!<br><strong>Richtig:</strong> ${direction ? correct.de : correct.es}<br><em>${correct.example}</em>`;
+    // Richtige Antwort vorlesen
+    setTimeout(() => speak(correct.es), 500);
+  } else {
+    btn.classList.add('correct');
+    btn.classList.add('pop');
+    fb.className = 'feedback-box correct';
+    fb.innerHTML = `✅ Richtig! <strong>+15 XP</strong><br><em>${correct.example}</em>`;
+    addXP(15);
+    state.quizCorrect++;
+    state.dailyDone++;
+    updateProgress();
+    setTimeout(() => speak(correct.es), 300);
+  }
+
+  fb.style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuiz() {
+  loadQuiz();
+}
+
+// ══════════════════════════════════════════════════════
+// SCHREIBEN
+// ══════════════════════════════════════════════════════
+let currentWrite = null;
+
+function loadWrite() {
+  const vocab = state.vocab;
+  if (!vocab || vocab.length === 0) {
+    document.getElementById('writeQuestion').textContent = 'Keine Vokabeln verfügbar';
+    document.getElementById('writeHint').textContent = 'Wähle eine andere Nische';
+    return;
+  }
+  const v = vocab[Math.floor(Math.random() * vocab.length)];
+  currentWrite = v;
+  document.getElementById('writeQuestion').textContent = v.de;
+  document.getElementById('writeHint').textContent = 'Wie heißt „' + v.de + '" auf Spanisch?';
+  const inp = document.getElementById('writeInput');
+  inp.value = '';
+  inp.className = 'write-input';
+  inp.disabled = false;
+  inp.focus();
+  document.getElementById('writeFeedback').style.display = 'none';
+  document.getElementById('writeNextBtn').style.display = 'none';
+  document.getElementById('writeSpeakBtn').style.display = 'none';
+}
+
+function checkWrite() {
+  if (!currentWrite) return;
+  const inp = document.getElementById('writeInput');
+  const answer = inp.value.trim().toLowerCase();
+  const correct = currentWrite.es.toLowerCase();
+  const fb = document.getElementById('writeFeedback');
+
+  // Allow minor typos: simple check
+  const isCorrect = answer === correct ||
+    answer.replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u') ===
+    correct.replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u');
+
+  inp.disabled = true;
+
+  if (isCorrect) {
+    inp.className = 'write-input correct';
+    fb.className = 'feedback-box correct';
+    fb.innerHTML = `✅ Richtig! <strong>+20 XP</strong><br><em>${currentWrite.example}</em>`;
+    addXP(20);
+    state.dailyDone++;
+    updateProgress();
+    state.cardStatus[state.vocab.indexOf(currentWrite)] = 'learned';
+    setTimeout(() => speak(currentWrite.es), 300);
+  } else {
+    inp.className = 'write-input wrong';
+    fb.className = 'feedback-box wrong';
+    fb.innerHTML = `❌ Fast! Die richtige Antwort: <strong>${currentWrite.es}</strong><br>${currentWrite.pron}<br><em>${currentWrite.example}</em>`;
+    setTimeout(() => speak(currentWrite.es), 500);
+  }
+
+  fb.style.display = 'block';
+  document.getElementById('writeSpeakBtn').style.display = 'inline-block';
+  document.getElementById('writeNextBtn').style.display = 'block';
+}
+
+function nextWrite() { loadWrite(); }
+
+// ══════════════════════════════════════════════════════
+// FORTSCHRITT
+// ══════════════════════════════════════════════════════
+function renderFortschritt() {
+  document.getElementById('st-streak').textContent = state.streak;
+  document.getElementById('st-xp').textContent = state.xp;
+  const learned = Object.values(state.cardStatus).filter(s=>s==='learned').length;
+  document.getElementById('st-learned').textContent = learned + '/' + state.vocab.length;
+  const pct = state.quizTotal > 0 ? Math.round(state.quizCorrect/state.quizTotal*100) : 0;
+  document.getElementById('st-correct').textContent = pct + '%';
+
+  const list = document.getElementById('vocabList');
+  list.innerHTML = '';
+  state.vocab.forEach((v,i) => {
+    const status = state.cardStatus[i] || 'new';
+    const div = document.createElement('div');
+    div.className = 'vocab-item';
+    div.innerHTML = `
+      <div class="vocab-status ${status}"></div>
+      <div class="vocab-es">${v.es}</div>
+      <div class="vocab-de">${v.de}</div>
+      <div style="font-size:11px;color:var(--text-faint)">${status==='learned'?'✅ Gelernt':status==='learning'?'📖 Lernend':'🆕 Neu'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// AUSSPRACHE
+// ══════════════════════════════════════════════════════
+function renderPronTips() {
+  const container = document.getElementById('pronCards');
+  container.innerHTML = '';
+  PRON_TIPS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'pron-card';
+    div.innerHTML = `
+      <div class="pron-rule">📌 ${p.rule}</div>
+      <div class="pron-example">${p.example}</div>
+      <div class="pron-explain">${p.explain}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// XP & PROGRESS
+// ══════════════════════════════════════════════════════
+function addXP(amount) {
+  state.xp += amount;
+  const xpEl = document.getElementById('xpCount');
+  xpEl.textContent = state.xp;
+  xpEl.classList.add('pop');
+  setTimeout(()=>xpEl.classList.remove('pop'), 350);
+  saveState();
+}
+
+function updateProgress() {
+  const pct = Math.min(state.dailyDone / state.dailyGoal * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = state.dailyDone + ' / ' + state.dailyGoal;
+  if (state.dailyDone >= state.dailyGoal) {
+    state.streak++;
+    document.getElementById('streakCount').textContent = state.streak;
+    showToast('🔥 Tagesziel erreicht! Streak: ' + state.streak + ' Tage');
+  }
+  saveState();
+}
+
+// ══════════════════════════════════════════════════════
+// KI CHAT
+// ══════════════════════════════════════════════════════
+async function sendAiMessage() {
+  const input = document.getElementById('aiInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendMsg(msg, 'user');
+
+  const sendBtn = document.getElementById('aiSendBtn');
+  sendBtn.disabled = true;
+
+  const loadingDiv = appendMsg('<span class="dots"><span>•</span><span>•</span><span>•</span></span>', 'bot loading');
+
+  const nicheName = { urlaub:'Urlaub & Reisen', alltag:'Alltag & Einkaufen', grundwortschatz:'Grundwortschatz', social:'Smalltalk & Soziales' }[state.niche];
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `Du bist "Profe IA", ein freundlicher und motivierender Spanischlehrer für deutsche Anfänger. 
+Der Nutzer lernt gerade Spanisch im Bereich: ${nicheName}.
+Antworte auf DEUTSCH (außer wenn du Spanisch erklärst oder übst).
+Halte deine Antworten kurz, klar und lehrreich (max 150 Wörter).
+Nutze Emojis sparsam. Wenn du Spanisch zeigst, schreibe immer die deutsche Übersetzung daneben.
+Sei ermunternd und positiv!`,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+
+    const data = await response.json();
+    loadingDiv.remove();
+
+    const text = data.content?.[0]?.text || 'Entschuldigung, ich konnte keine Antwort generieren.';
+    appendMsg(text, 'bot');
+  } catch(e) {
+    loadingDiv.remove();
+    appendMsg('⚠️ Verbindungsfehler. Bitte versuche es erneut.', 'bot');
+  }
+
+  sendBtn.disabled = false;
+}
+
+function appendMsg(text, type) {
+  const container = document.getElementById('aiMessages');
+  const div = document.createElement('div');
+  div.className = 'ai-message ' + type;
+  div.innerHTML = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function quickAsk(text) {
+  document.getElementById('aiInput').value = text;
+  showTab('ki', document.querySelectorAll('.tab')[4]);
+  sendAiMessage();
+}
+
+// ══════════════════════════════════════════════════════
+// AUSSPRACHE – WEB SPEECH API
+// ══════════════════════════════════════════════════════
+function speak(text, onDone) {
+  if (!window.speechSynthesis) {
+    showToast('⚠️ Dein Browser unterstützt keine Sprachausgabe');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'es-ES';
+  utt.rate = 0.85;
+  utt.pitch = 1;
+
+  // Spanische Stimme bevorzugen
+  const voices = window.speechSynthesis.getVoices();
+  const esVoice = voices.find(v => v.lang.startsWith('es')) || null;
+  if (esVoice) utt.voice = esVoice;
+
+  if (onDone) utt.onend = onDone;
+  window.speechSynthesis.speak(utt);
+}
+
+// Stimmen laden (manche Browser laden asynchron)
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+function speakBtn(text, btnEl) {
+  btnEl.textContent = '🔊';
+  btnEl.style.transform = 'scale(1.2)';
+  speak(text, () => {
+    btnEl.textContent = '🔊';
+    btnEl.style.transform = '';
+  });
+  setTimeout(() => { btnEl.style.transform = ''; }, 400);
+}
+
+// ══════════════════════════════════════════════════════
+// NISCHE WECHSELN
+// ══════════════════════════════════════════════════════
+function showNicheSwitcher() {
+  const overlay = document.getElementById('nicheSwitcherOverlay');
+  overlay.style.display = 'flex';
+  // Aktuelle Nische markieren
+  document.querySelectorAll('[id^="nsCard-"]').forEach(c => c.classList.remove('selected'));
+  const current = document.getElementById('nsCard-' + state.niche);
+  if (current) current.classList.add('selected');
+}
+
+function hideNicheSwitcher() {
+  document.getElementById('nicheSwitcherOverlay').style.display = 'none';
+}
+
+function switchNiche(key, el) {
+  if (key === state.niche) { hideNicheSwitcher(); return; }
+
+  document.querySelectorAll('[id^="nsCard-"]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Save current niche's cardStatus with prefix
+  const oldNiche = state.niche;
+  Object.keys(state.cardStatus).forEach(i => {
+    const nicheKey = oldNiche + '_' + i;
+    localStorage.setItem('habla_card_' + nicheKey, state.cardStatus[i]);
+  });
+
+  // Switch niche
+  state.niche = key;
+  state.vocab = VOCAB[key] || VOCAB['urlaub'];
+  state.cardIndex = 0;
+  state.currentCat = 'all'; // Reset category filter
+  
+  // Load new niche's cardStatus
+  state.cardStatus = {};
+  state.vocab.forEach((_, i) => {
+    const nicheKey = key + '_' + i;
+    const saved = localStorage.getItem('habla_card_' + nicheKey);
+    state.cardStatus[i] = saved || 'new';
+  });
+
+  const nicheNames = { 
+    urlaub:'Urlaub', alltag:'Alltag', grundwortschatz:'Grundwortschatz', 
+    social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin' 
+  };
+  const btn = document.getElementById('nicheBtn');
+  if (btn) btn.textContent = '🌍 ' + (nicheNames[key] || key);
+
+  initCatTabs();
+  loadCard();
+  loadQuiz();
+  loadWrite();
+  renderFortschritt();
+  saveState();
+  hideNicheSwitcher();
+  showToast('Nische gewechselt: ' + (NICHE_NAMES[key] || key) + ' 🎯');
+}
+
+// Overlay schließen bei Klick außerhalb
+document.getElementById('nicheSwitcherOverlay').addEventListener('click', function(e) {
+  if (e.target === this) hideNicheSwitcher();
+});
+document.getElementById('certModal').addEventListener('click', function(e) {
+  if (e.target === this) closeCertModal();
+});
+document.getElementById('pdfModal').addEventListener('click', function(e) {
+  if (e.target === this) closePdfModal();
+});
+
+// ══════════════════════════════════════════════════════
+// LEADERBOARD
+// ══════════════════════════════════════════════════════
+const FAKE_PLAYERS = [
+  { name:'🇩🇪 Maria S.',  xp:980 },
+  { name:'🇦🇹 Thomas K.', xp:850 },
+  { name:'🇩🇪 Anna M.',   xp:720 },
+  { name:'🇨🇭 Felix B.',  xp:610 },
+  { name:'🇩🇪 Julia R.',  xp:540 },
+  { name:'🇩🇪 Max W.',    xp:420 },
+  { name:'🇦🇹 Sophie L.', xp:380 },
+  { name:'🇨🇭 Lukas H.',  xp:290 },
+];
+
+function renderLeaderboard() {
+  const players = [...FAKE_PLAYERS, { name:'👤 Du', xp:state.xp, isMe:true }]
+    .sort((a,b)=>b.xp-a.xp);
+  const container = document.getElementById('leaderboardList');
+  if (!container) return;
+  container.innerHTML = '';
+  players.forEach((p,i) => {
+    const medals = ['🥇','🥈','🥉'];
+    const medal = medals[i] || (i+1)+'.';
+    const div = document.createElement('div');
+    div.style.cssText = `display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);gap:14px;${p.isMe?'background:var(--terra-light);':''}`;
+    div.innerHTML = `<div style="font-size:18px;width:28px;text-align:center">${medal}</div>
+      <div style="flex:1;font-size:14px;font-weight:${p.isMe?700:500};color:${p.isMe?'var(--terra)':'var(--text)'}">${p.name}</div>
+      <div style="font-size:14px;font-weight:700;color:${p.isMe?'var(--terra)':'var(--text-muted)'}">⭐ ${p.xp}</div>`;
+    container.appendChild(div);
+  });
+  const url = window.location.href.split('?')[0];
+  const sl = document.getElementById('shareLink');
+  if (sl) sl.textContent = url + '?ref=Du';
+  
+  // E-Mail-Box ausblenden wenn bereits angemeldet
+  const savedEmail = localStorage.getItem('habla_email');
+  const emailBox = document.getElementById('emailPromptBox');
+  if (emailBox && savedEmail) {
+    emailBox.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// E-MAIL
+// ══════════════════════════════════════════════════════
+function subscribeEmail() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) { showToast('⚠️ Bitte gültige E-Mail eingeben'); return; }
+  localStorage.setItem('habla_email', email);
+  document.getElementById('emailConfirm').style.display = 'block';
+  document.getElementById('emailInput').disabled = true;
+  showToast('📧 Angemeldet! Täglich neue Vokabeln kommen bald.');
+}
+
+// ══════════════════════════════════════════════════════
+// FREUNDE EINLADEN
+// ══════════════════════════════════════════════════════
+function copyInviteLink() {
+  const link = document.getElementById('shareLink').textContent;
+  navigator.clipboard.writeText(link).then(()=>showToast('🔗 Link kopiert!'));
+}
+function shareWhatsApp() {
+  const link = document.getElementById('shareLink').textContent;
+  window.open('https://wa.me/?text='+encodeURIComponent('Ich lerne Spanisch mit ¡Habla! Mach mit: '+link),'_blank');
+}
+function shareNative() {
+  const link = document.getElementById('shareLink').textContent;
+  if (navigator.share) navigator.share({title:'¡Habla!',text:'Lerne Spanisch mit mir!',url:link});
+  else copyInviteLink();
+}
+
+// ══════════════════════════════════════════════════════
+// ZERTIFIKAT
+// ══════════════════════════════════════════════════════
+const NICHE_NAMES = {
+  urlaub:'Urlaub & Reisen', alltag:'Alltag & Einkaufen',
+  grundwortschatz:'Grundwortschatz', social:'Smalltalk & Soziales',
+  beruf:'Beruf & Business', kinder:'Spanisch für Kinder', medizin:'Medizin & Gesundheit'
+};
+
+function showCertModal() {
+  const learned = Object.values(state.cardStatus).filter(s=>s==='learned').length;
+  document.getElementById('certNiche').textContent = NICHE_NAMES[state.niche]||state.niche;
+  document.getElementById('certStats').textContent = `${learned} von ${state.vocab.length} Vokabeln · ${state.xp} XP · ${state.streak} Tage Streak`;
+  document.getElementById('certDate').textContent = new Date().toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('certModal').style.display = 'flex';
+}
+function closeCertModal() { document.getElementById('certModal').style.display='none'; }
+
+function downloadCert() {
+  const canvas = document.createElement('canvas');
+  canvas.width=800; canvas.height=560;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,800,560);
+  grad.addColorStop(0,'#fffbf0'); grad.addColorStop(1,'#fff5e0');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,800,560);
+  ctx.strokeStyle='#F5A623'; ctx.lineWidth=6; ctx.strokeRect(20,20,760,520);
+  ctx.strokeStyle='#C94B2C'; ctx.lineWidth=2; ctx.strokeRect(30,30,740,500);
+  ctx.textAlign='center';
+  ctx.font='56px serif'; ctx.fillText('🏅',400,95);
+  ctx.fillStyle='#7A6A52'; ctx.font='italic 15px Georgia'; ctx.fillText('Z E R T I F I K A T',400,140);
+  ctx.fillStyle='#C94B2C'; ctx.font='bold 40px Georgia'; ctx.fillText('¡Felicidades!',400,200);
+  ctx.fillStyle='#7A6A52'; ctx.font='17px sans-serif'; ctx.fillText('hat erfolgreich abgeschlossen:',400,245);
+  ctx.fillStyle='#1C1208'; ctx.font='bold 26px Georgia'; ctx.fillText(NICHE_NAMES[state.niche]||state.niche,400,298);
+  ctx.fillStyle='#7A6A52'; ctx.font='15px sans-serif'; ctx.fillText(document.getElementById('certStats').textContent,400,338);
+  ctx.strokeStyle='#F5A623'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(200,368); ctx.lineTo(600,368); ctx.stroke();
+  ctx.fillStyle='#B8A88A'; ctx.font='italic 17px Georgia'; ctx.fillText('¡Habla! Spanisch Lern-App',400,408);
+  ctx.font='13px sans-serif'; ctx.fillText(document.getElementById('certDate').textContent,400,438);
+  const a=document.createElement('a'); a.download='habla-zertifikat.png'; a.href=canvas.toDataURL('image/png'); a.click();
+  showToast('📥 Zertifikat gespeichert!');
+}
+
+function shareCert() {
+  const text = `Ich habe "${NICHE_NAMES[state.niche]}" auf Spanisch gelernt! 🇪🇸 ${state.xp} XP #hablaapp`;
+  if (navigator.share) navigator.share({title:'Mein Spanisch-Zertifikat',text});
+  else navigator.clipboard.writeText(text).then(()=>showToast('Text kopiert!'));
+}
+
+// ══════════════════════════════════════════════════════
+// PDF SPICKZETTEL
+// ══════════════════════════════════════════════════════
+function showPdfModal() {
+  const nicheName = NICHE_NAMES[state.niche]||state.niche;
+  let html = `<div style="font-family:Georgia,serif;color:#1C1208">
+    <div style="text-align:center;border-bottom:2px solid #C94B2C;padding-bottom:10px;margin-bottom:14px">
+      <div style="font-size:20px;font-weight:bold;color:#C94B2C">¡Habla! Spickzettel</div>
+      <div style="font-size:13px;color:#7A6A52">${nicheName}</div></div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr style="background:#FFF5E6">
+        <th style="text-align:left;padding:6px 8px;border:1px solid #EDE0CC">🇪🇸 Spanisch</th>
+        <th style="text-align:left;padding:6px 8px;border:1px solid #EDE0CC">🇩🇪 Deutsch</th>
+        <th style="text-align:left;padding:6px 8px;border:1px solid #EDE0CC">Aussprache</th>
+      </tr>`;
+  state.vocab.forEach(v=>{
+    html+=`<tr><td style="padding:5px 8px;border:1px solid #EDE0CC;font-weight:600;color:#C94B2C">${v.es}</td>
+      <td style="padding:5px 8px;border:1px solid #EDE0CC">${v.de}</td>
+      <td style="padding:5px 8px;border:1px solid #EDE0CC;color:#B8A88A;font-style:italic">${v.pron}</td></tr>`;
+  });
+  html+=`</table><div style="text-align:center;margin-top:14px;font-size:11px;color:#B8A88A">¡Habla! · ${new Date().toLocaleDateString('de-DE')}</div></div>`;
+  document.getElementById('pdfPreview').innerHTML = html;
+  document.getElementById('pdfModal').style.display = 'flex';
+}
+function closePdfModal() { document.getElementById('pdfModal').style.display='none'; }
+function printSpickzettel() {
+  const content = document.getElementById('pdfPreview').innerHTML;
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>¡Habla! Spickzettel</title>
+    <style>body{font-family:Georgia,serif;padding:20px} @media print{body{padding:0}}</style>
+    </head><body>${content}</body></html>`);
+  win.document.close(); win.focus();
+  setTimeout(()=>{win.print();win.close();},300);
+  showToast('🖨 Druckdialog geöffnet!');
+}
+
+// ══════════════════════════════════════════════════════
+// MILESTONE CHECK
+// ══════════════════════════════════════════════════════
+function checkMilestone() {
+  const learned = Object.values(state.cardStatus).filter(s=>s==='learned').length;
+  [5,10,15].forEach(m=>{
+    if (learned>=m && !localStorage.getItem('habla_ms_'+m)) {
+      localStorage.setItem('habla_ms_'+m,'1');
+      setTimeout(()=>showToast('🎉 '+m+' Vokabeln! Zertifikat im Stats-Tab verfügbar',4000),500);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════
+const LS_KEY = 'habla_save_v1';
+
+function saveState() {
+  const toSave = {
+    niche:       state.niche,
+    cardStatus:  state.cardStatus,
+    xp:          state.xp,
+    streak:      state.streak,
+    dailyDone:   state.dailyDone,
+    lastSaved:   new Date().toDateString(),
+    quizTotal:   state.quizTotal,
+    quizCorrect: state.quizCorrect,
+  };
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(toSave));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function resetProgress() {
+  if (!confirm('Wirklich? Dein gesamter Fortschritt wird gelöscht.')) return;
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+}
+
+// Streak-Logik: neuer Tag = Streak weiterzählen, 2+ Tage Pause = Reset
+function checkStreak(saved) {
+  if (!saved.lastSaved) return;
+  const last = new Date(saved.lastSaved);
+  const today = new Date();
+  const diffDays = Math.floor((today - last) / (1000*60*60*24));
+  if (diffDays === 1) {
+    // Gestern gelernt → Streak bleibt (wird heute erhöht wenn Tagesziel erreicht)
+    state.dailyDone = 0; // neuer Tag, neues Tagesziel
+  } else if (diffDays > 1) {
+    // Zu lange Pause → Streak reset
+    state.streak = 0;
+    state.dailyDone = 0;
+  }
+  // diffDays === 0 → selber Tag, alles bleibt
+}
+
+// ══════════════════════════════════════════════════════
+// DEFAULT NICHE SELECTION & AUTO-RESTORE
+// ══════════════════════════════════════════════════════
+const saved = loadState();
+
+if (saved) {
+  // Gespeicherten Stand wiederherstellen: Onboarding überspringen
+  state.niche       = saved.niche;
+  state.cardStatus  = saved.cardStatus || {};
+  state.xp          = saved.xp || 0;
+  state.streak      = saved.streak || 1;
+  state.quizTotal   = saved.quizTotal || 0;
+  state.quizCorrect = saved.quizCorrect || 0;
+  state.dailyDone   = saved.dailyDone || 0;
+  state.vocab       = VOCAB[state.niche] || VOCAB['urlaub'];
+  state.dailyGoal   = 10;
+  state.currentCat  = 'all';
+
+  checkStreak(saved);
+
+  // UI updaten
+  document.getElementById('streakCount').textContent = state.streak;
+  document.getElementById('xpCount').textContent = state.xp;
+  updateProgress();
+
+  // App direkt starten, Onboarding überspringen
+  document.getElementById('screen-onboarding').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+  initCatTabs();
+  loadCard();
+  loadQuiz();
+  loadWrite();
+  renderFortschritt();
+  renderPronTips();
+
+  // Nischen-Button beschriften
+  const nicheNames = { urlaub:'Urlaub', alltag:'Alltag', grundwortschatz:'Grundwortschatz', social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin' };
+  const btn = document.getElementById('nicheBtn');
+  if (btn) btn.textContent = '🌍 ' + (nicheNames[state.niche] || 'Nische');
+
+  // "Willkommen zurück"-Banner
+  showToast('👋 Willkommen zurück! ' + state.streak + ' 🔥 Streak');
+} else {
+  // Erster Start: Onboarding zeigen
+  document.querySelector('.niche-card').classList.add('selected');
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST NOTIFICATION
+// ══════════════════════════════════════════════════════
+function showToast(msg, duration=3000) {
+  const existing = document.getElementById('toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'toast';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--text); color:var(--bg); padding:12px 24px;
+    border-radius:50px; font-size:14px; font-weight:600;
+    z-index:9999; box-shadow:var(--shadow-lg);
+    animation: toastIn 0.3s ease;
+  `;
+  document.head.insertAdjacentHTML('beforeend', `<style>@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>`);
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(), 300); }, duration);
+}
+</script>
+</body>
+</html>
