@@ -824,6 +824,11 @@ body::after {
       <div class="niche-title">Medizin & Gesundheit</div>
       <div class="niche-desc">Arzt, Symptome, Notfall, Apotheke</div>
     </div>
+    <div class="niche-card" onclick="selectNiche('guayabita', this)" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width:100%">
+      <span class="niche-emoji">🥗</span>
+      <div class="niche-title">La Guayabita (Imbiss)</div>
+      <div class="niche-desc">Poké, Sushi, Bowls – lockerer Service-Talk</div>
+    </div>
   </div>
 
   <button class="btn-start" onclick="startApp()">Jetzt starten 🚀</button>
@@ -836,12 +841,76 @@ body::after {
   <div class="topbar">
     <div class="topbar-logo">¡Habla!</div>
     <div style="display:flex; gap:10px; align-items:center">
+      <button onclick="showSettings()" style="background:var(--bg2); border:1px solid var(--border); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
+        onmouseover="this.style.borderColor='var(--ocean)';this.style.color='var(--ocean)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">⚙️ Einstellungen</button>
       <button onclick="showNicheSwitcher()" style="background:var(--bg2); border:1px solid var(--border); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
         onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
         id="nicheBtn">🌍 Nische</button>
       <div class="streak-badge">🔥 <span id="streakCount">0</span></div>
       <div class="xp-badge">⭐ <span id="xpCount">0</span> XP</div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(28,18,8,0.5); z-index:200; align-items:center; justify-content:center; padding:20px">
+    <div style="background:var(--surface); border-radius:var(--radius); padding:28px; max-width:420px; width:100%; box-shadow:var(--shadow-lg)">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+        <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:600">⚙️ Einstellungen</div>
+        <button onclick="hideSettings()" style="background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-faint); line-height:1">×</button>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-size:14px; font-weight:600; margin-bottom:10px">🔄 Lernrichtung</div>
+        <div style="display:flex; flex-direction:column; gap:10px">
+          <label style="display:flex; align-items:center; gap:10px; padding:12px; border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s" onmouseover="this.style.borderColor='var(--terra)'" onmouseout="this.style.borderColor=state.learningDirection==='es-de'?'var(--terra)':'var(--border)'" onclick="setDirection('es-de')">
+            <input type="radio" name="direction" value="es-de" ${state.learningDirection==='es-de'?'checked':''} style="margin:0">
+            <span style="font-size:13px">🇪🇸 → 🇩🇪 Spanisch lernen (Ich bin Deutscher)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; padding:12px; border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s" onmouseover="this.style.borderColor='var(--terra)'" onmouseout="this.style.borderColor=state.learningDirection==='de-es'?'var(--terra)':'var(--border)'" onclick="setDirection('de-es')">
+            <input type="radio" name="direction" value="de-es" ${state.learningDirection==='de-es'?'checked':''} style="margin:0">
+            <span style="font-size:13px">🇩🇪 → 🇪🇸 Deutsch lernen (Soy español/a)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; padding:12px; border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:all 0.2s" onmouseover="this.style.borderColor='var(--terra)'" onmouseout="this.style.borderColor=state.learningDirection==='both'?'var(--terra)':'var(--border)'" onclick="setDirection('both')">
+            <input type="radio" name="direction" value="both" ${state.learningDirection==='both'?'checked':''} style="margin:0">
+            <span style="font-size:13px">↔️ Beide Richtungen (abwechselnd)</span>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-size:14px; font-weight:600; margin-bottom:10px">🌎 Spanisch-Region & Dialekt</div>
+        <select id="regionSelect" onchange="setRegion(this.value)" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; font-family:'Outfit',sans-serif; font-size:14px; cursor:pointer; background:var(--bg)">
+          <optgroup label="🇪🇸 Spanien">
+            <option value="spain-castilla">Kastilien (Standard-Spanisch)</option>
+            <option value="spain-andalucia">Andalusien (seseo, aspiración)</option>
+            <option value="spain-cataluna">Katalonien (katalanischer Einfluss)</option>
+            <option value="spain-canarias">Kanarische Inseln (wie Lateinamerika)</option>
+          </optgroup>
+          <optgroup label="🌎 Lateinamerika">
+            <option value="mexico">🇲🇽 Mexiko</option>
+            <option value="argentina">🇦🇷 Argentinien (voseo, "sh")</option>
+            <option value="colombia">🇨🇴 Kolumbien (klares Spanisch)</option>
+            <option value="chile">🇨🇱 Chile (sehr schnell)</option>
+            <option value="peru">🇵🇪 Peru</option>
+            <option value="venezuela">🇻🇪 Venezuela</option>
+            <option value="cuba">🇨🇺 Kuba (seseo, verschluckt "s")</option>
+            <option value="republicadominicana">🇩🇴 Dominikanische Rep.</option>
+          </optgroup>
+        </select>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:6px; line-height:1.5; background:var(--bg2); padding:8px; border-radius:6px" id="regionInfo">
+          <strong>Kastilien:</strong> Klassisches Hochspanisch mit "th"-Aussprache für "z/c"
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-size:14px; font-weight:600; margin-bottom:10px">🎯 Tagesziel</div>
+        <input type="range" id="goalSlider" min="5" max="50" step="5" value="${state.dailyGoal}" oninput="updateGoal(this.value)" style="width:100%">
+        <div style="text-align:center; font-size:16px; font-weight:600; color:var(--terra); margin-top:8px" id="goalDisplay">${state.dailyGoal} Vokabeln / Tag</div>
+      </div>
+
+      <button onclick="hideSettings()" style="width:100%; background:var(--terra); color:white; border:none; padding:13px; border-radius:10px; font-family:'Outfit',sans-serif; font-weight:600; font-size:14px; cursor:pointer">Speichern ✓</button>
     </div>
   </div>
 
@@ -890,6 +959,11 @@ body::after {
           <span class="niche-emoji">🏥</span>
           <div class="niche-title">Medizin & Gesundheit</div>
           <div class="niche-desc">Arzt, Symptome, Notfall, Apotheke</div>
+        </div>
+        <div class="niche-card" onclick="switchNiche('guayabita', this)" id="nsCard-guayabita" style="grid-column:1/-1">
+          <span class="niche-emoji">🥗</span>
+          <div class="niche-title">La Guayabita (Imbiss)</div>
+          <div class="niche-desc">Poké, Sushi, Bowls – lockerer Talk</div>
         </div>
       </div>
     </div>
@@ -1182,22 +1256,46 @@ body::after {
 // ══════════════════════════════════════════════════════
 const VOCAB = {
   urlaub: [
-    { es:'el hotel', de:'das Hotel', pron:'[el o-TEL]', example:'Ich wohne im Hotel.', cat:'🏨 Unterkunft' },
-    { es:'la playa', de:'der Strand', pron:'[la PLA-ya]', example:'La playa es bonita.', cat:'🏖️ Strand' },
-    { es:'el aeropuerto', de:'der Flughafen', pron:'[el ae-ro-PWER-to]', example:'El aeropuerto está lejos.', cat:'✈️ Transport' },
-    { es:'el billete', de:'das Ticket / die Fahrkarte', pron:'[el bi-YE-te]', example:'Quiero un billete.', cat:'✈️ Transport' },
-    { es:'la maleta', de:'der Koffer', pron:'[la ma-LE-ta]', example:'Mi maleta es grande.', cat:'🧳 Reise' },
-    { es:'el pasaporte', de:'der Reisepass', pron:'[el pa-sa-POR-te]', example:'Necesito mi pasaporte.', cat:'🧳 Reise' },
-    { es:'la reserva', de:'die Reservierung', pron:'[la re-SER-ba]', example:'Tengo una reserva.', cat:'🏨 Unterkunft' },
-    { es:'el restaurante', de:'das Restaurant', pron:'[el res-tau-RAN-te]', example:'El restaurante es bueno.', cat:'🍽️ Essen' },
-    { es:'la cuenta', de:'die Rechnung', pron:'[la KWEN-ta]', example:'La cuenta, por favor.', cat:'🍽️ Essen' },
-    { es:'el mapa', de:'die Karte / der Stadtplan', pron:'[el MA-pa]', example:'¿Tienes un mapa?', cat:'🗺️ Navigation' },
-    { es:'la calle', de:'die Straße', pron:'[la KA-ye]', example:'¿Cómo se llama esta calle?', cat:'🗺️ Navigation' },
-    { es:'la farmacia', de:'die Apotheke', pron:'[la far-MA-thia]', example:'Busco una farmacia.', cat:'🏥 Gesundheit' },
-    { es:'el médico', de:'der Arzt', pron:'[el ME-di-ko]', example:'Necesito un médico.', cat:'🏥 Gesundheit' },
-    { es:'el taxi', de:'das Taxi', pron:'[el TAK-si]', example:'Quiero un taxi.', cat:'✈️ Transport' },
+    { es:'el hotel', de:'das Hotel', pron:'[el o-TEL]', example:'El hotel es muy bonito.', cat:'🏨 Unterkunft' },
+    { es:'la habitación', de:'das Zimmer', pron:'[la a-bi-ta-THION]', example:'Quiero una habitación doble.', cat:'🏨 Unterkunft' },
+    { es:'la llave', de:'der Schlüssel', pron:'[la YA-be]', example:'¿Dónde está la llave?', cat:'🏨 Unterkunft' },
+    { es:'el desayuno', de:'das Frühstück', pron:'[el de-sa-YU-no]', example:'El desayuno está incluido.', cat:'🏨 Unterkunft' },
     { es:'la playa', de:'der Strand', pron:'[la PLA-ya]', example:'Vamos a la playa.', cat:'🏖️ Strand' },
-    { es:'el museo', de:'das Museum', pron:'[el mu-SE-o]', example:'El museo es interesante.', cat:'🗺️ Navigation' },
+    { es:'el mar', de:'das Meer', pron:'[el mar]', example:'El mar está tranquilo.', cat:'🏖️ Strand' },
+    { es:'la toalla', de:'das Handtuch', pron:'[la to-A-ya]', example:'Necesito una toalla.', cat:'🏖️ Strand' },
+    { es:'el sol', de:'die Sonne', pron:'[el sol]', example:'Hace mucho sol hoy.', cat:'🏖️ Strand' },
+    { es:'el aeropuerto', de:'der Flughafen', pron:'[el ae-ro-PWER-to]', example:'El aeropuerto está lejos.', cat:'✈️ Transport' },
+    { es:'el avión', de:'das Flugzeug', pron:'[el a-BION]', example:'El avión sale a las tres.', cat:'✈️ Transport' },
+    { es:'el billete', de:'das Ticket / die Fahrkarte', pron:'[el bi-YE-te]', example:'Quiero un billete de ida y vuelta.', cat:'✈️ Transport' },
+    { es:'el tren', de:'der Zug', pron:'[el tren]', example:'¿A qué hora sale el tren?', cat:'✈️ Transport' },
+    { es:'el autobús', de:'der Bus', pron:'[el au-to-BUS]', example:'El autobús está lleno.', cat:'✈️ Transport' },
+    { es:'el taxi', de:'das Taxi', pron:'[el TAK-si]', example:'Necesito un taxi al centro.', cat:'✈️ Transport' },
+    { es:'la estación', de:'der Bahnhof', pron:'[la es-ta-THION]', example:'La estación está cerca.', cat:'✈️ Transport' },
+    { es:'la maleta', de:'der Koffer', pron:'[la ma-LE-ta]', example:'Mi maleta pesa mucho.', cat:'🧳 Reise' },
+    { es:'el equipaje', de:'das Gepäck', pron:'[el e-ki-PA-he]', example:'¿Dónde recojo el equipaje?', cat:'🧳 Reise' },
+    { es:'el pasaporte', de:'der Reisepass', pron:'[el pa-sa-POR-te]', example:'Necesito mi pasaporte.', cat:'🧳 Reise' },
+    { es:'la reserva', de:'die Reservierung', pron:'[la re-SER-ba]', example:'Tengo una reserva a nombre de Schmidt.', cat:'🏨 Unterkunft' },
+    { es:'el restaurante', de:'das Restaurant', pron:'[el res-tau-RAN-te]', example:'Hay un restaurante muy bueno aquí.', cat:'🍽️ Essen' },
+    { es:'el menú', de:'die Speisekarte', pron:'[el me-NU]', example:'¿Puedo ver el menú, por favor?', cat:'🍽️ Essen' },
+    { es:'la cuenta', de:'die Rechnung', pron:'[la KWEN-ta]', example:'La cuenta, por favor.', cat:'🍽️ Essen' },
+    { es:'la propina', de:'das Trinkgeld', pron:'[la pro-PI-na]', example:'¿Cuánta propina dejo?', cat:'🍽️ Essen' },
+    { es:'el mapa', de:'die Karte / der Stadtplan', pron:'[el MA-pa]', example:'¿Tienes un mapa de la ciudad?', cat:'🗺️ Navigation' },
+    { es:'la calle', de:'die Straße', pron:'[la KA-ye]', example:'¿En qué calle está el museo?', cat:'🗺️ Navigation' },
+    { es:'a la derecha', de:'rechts', pron:'[a la de-RE-tcha]', example:'Gire a la derecha.', cat:'🗺️ Navigation' },
+    { es:'a la izquierda', de:'links', pron:'[a la ith-KIER-da]', example:'El banco está a la izquierda.', cat:'🗺️ Navigation' },
+    { es:'todo recto', de:'geradeaus', pron:'[TO-do REK-to]', example:'Siga todo recto.', cat:'🗺️ Navigation' },
+    { es:'¿dónde está…?', de:'Wo ist…?', pron:'[DON-de es-TA]', example:'¿Dónde está la estación?', cat:'🗺️ Navigation' },
+    { es:'lejos / cerca', de:'weit / nah', pron:'[LE-hos / THER-ka]', example:'¿Está lejos de aquí?', cat:'🗺️ Navigation' },
+    { es:'la farmacia', de:'die Apotheke', pron:'[la far-MA-thia]', example:'Busco una farmacia.', cat:'🏥 Gesundheit' },
+    { es:'el médico', de:'der Arzt', pron:'[el ME-di-ko]', example:'Necesito ver a un médico.', cat:'🏥 Gesundheit' },
+    { es:'me duele', de:'es tut mir weh', pron:'[me DWE-le]', example:'Me duele el estómago.', cat:'🏥 Gesundheit' },
+    { es:'el museo', de:'das Museum', pron:'[el mu-SE-o]', example:'El museo abre a las diez.', cat:'🎨 Sehenswürdigkeiten' },
+    { es:'la iglesia', de:'die Kirche', pron:'[la i-GLE-sia]', example:'La iglesia es muy antigua.', cat:'🎨 Sehenswürdigkeiten' },
+    { es:'el castillo', de:'das Schloss', pron:'[el kas-TI-yo]', example:'Visitamos el castillo ayer.', cat:'🎨 Sehenswürdigkeiten' },
+    { es:'la entrada', de:'der Eingang / das Ticket', pron:'[la en-TRA-da]', example:'¿Cuánto cuesta la entrada?', cat:'🎨 Sehenswürdigkeiten' },
+    { es:'¿a qué hora…?', de:'Um wie viel Uhr…?', pron:'[a ke O-ra]', example:'¿A qué hora cierra?', cat:'⏰ Zeit' },
+    { es:'hoy / mañana / ayer', de:'heute / morgen / gestern', pron:'[oy / ma-NYA-na / a-YER]', example:'Llegamos ayer.', cat:'⏰ Zeit' },
+    { es:'la piscina', de:'der Pool', pron:'[la pi-THI-na]', example:'¿Hay piscina en el hotel?', cat:'🏨 Unterkunft' },
   ],
   alltag: [
     { es:'el supermercado', de:'der Supermarkt', pron:'[el su-per-mer-KA-do]', example:'Voy al supermercado.', cat:'🛒 Einkaufen' },
@@ -1315,6 +1413,212 @@ VOCAB.medizin = [
   { es:'la ambulancia', de:'der Krankenwagen', pron:'[la am-bu-LAN-thia]', example:'¡Llame a la ambulancia!', cat:'🚨 Notfall' },
 ];
 
+VOCAB.guayabita = [
+  // Begrüßung & Bestellung
+  { es:'¡Hola! ¿Qué te pongo?', de:'Hey! Was darf\'s sein?', pron:'[O-la ke te PON-go]', example:'¡Hola guapo! ¿Qué te pongo hoy?', cat:'👋 Begrüßung', region:'all' },
+  { es:'¿Algo más?', de:'Noch was dazu?', pron:'[AL-go mas]', example:'¿Algo más o ya está?', cat:'🗣️ Service', region:'all' },
+  { es:'¿Para llevar o para comer aquí?', de:'Zum Mitnehmen oder hier essen?', pron:'[PA-ra ye-BAR o PA-ra ko-MER a-KI]', example:'¿Para llevar?', cat:'🗣️ Service', region:'all' },
+  { es:'Ahora mismo te lo preparo', de:'Mach ich dir sofort', pron:'[a-O-ra MIS-mo te lo pre-PA-ro]', example:'Vale, ahora mismo te lo preparo.', cat:'🗣️ Service', region:'all' },
+  { es:'¿Con qué lo quieres?', de:'Womit willst du das?', pron:'[kon ke lo KIE-res]', example:'¿Con qué lo quieres? ¿Pollo o atún?', cat:'🗣️ Service', region:'all' },
+  { es:'¿Qué ingredientes le pongo?', de:'Welche Zutaten soll ich reintun?', pron:'[ke in-gre-DIEN-tes le PON-go]', example:'Dime, ¿qué ingredientes le pongo?', cat:'🗣️ Service', region:'all' },
+  
+  // Basis-Gerichte
+  { es:'el poké / poke bowl', de:'die Poké Bowl', pron:'[el po-KE]', example:'Un poké de atún, por favor.', cat:'🍱 Gerichte', region:'all' },
+  { es:'la ensalada', de:'der Salat', pron:'[la en-sa-LA-da]', example:'Una ensalada mixta con pollo.', cat:'🥗 Gerichte', region:'all' },
+  { es:'el sushi', de:'das Sushi', pron:'[el SU-shi]', example:'Seis piezas de sushi de salmón.', cat:'🍣 Gerichte', region:'all' },
+  { es:'el smoothie / batido', de:'der Smoothie', pron:'[el es-MU-di / ba-TI-do]', example:'Un smoothie de fresa y plátano.', cat:'🥤 Getränke', region:'all' },
+  { es:'el yogur / yogurt', de:'der Joghurt', pron:'[el yo-GUR]', example:'Yogur natural con granola.', cat:'🥣 Gerichte', region:'all' },
+  { es:'el bowl', de:'die Bowl', pron:'[el bol]', example:'Un bowl de quinoa con aguacate.', cat:'🍱 Gerichte', region:'all' },
+  
+  // Proteine / Fleisch & Fisch
+  { es:'el pollo', de:'das Hähnchen', pron:'[el PO-yo]', example:'Bowl con pollo a la plancha.', cat:'🍗 Protein', region:'all' },
+  { es:'el atún', de:'der Thunfisch', pron:'[el a-TUN]', example:'Poké de atún fresco.', cat:'🐟 Protein', region:'all' },
+  { es:'el salmón', de:'der Lachs', pron:'[el sal-MON]', example:'Sushi de salmón, seis piezas.', cat:'🐟 Protein', region:'all' },
+  { es:'la ternera', de:'das Rindfleisch', pron:'[la ter-NE-ra]', example:'Ensalada con ternera.', cat:'🥩 Protein', region:'all' },
+  { es:'el pavo / pechuga de pavo', de:'die Pute / Putenbrust', pron:'[el PA-bo]', example:'Bowl con pavo bajo en grasa.', cat:'🍗 Protein', region:'all' },
+  { es:'los camarones / gambas', de:'die Garnelen', pron:'[los ka-ma-RO-nes / GAM-bas]', example:'Poké con camarones.', cat:'🦐 Protein', region:'mexico:camarones,spain:gambas' },
+  { es:'el tofu', de:'der Tofu', pron:'[el TO-fu]', example:'Bowl vegetariano con tofu.', cat:'🌱 Protein', region:'all' },
+  { es:'el pulpo', de:'der Oktopus', pron:'[el PUL-po]', example:'Ensalada de pulpo.', cat:'🐙 Protein', region:'all' },
+  
+  // Gemüse
+  { es:'el aguacate / palta', de:'die Avocado', pron:'[el a-gwa-KA-te / PAL-ta]', example:'Con aguacate extra, porfa.', cat:'🥑 Gemüse', region:'spain:aguacate,argentina:palta' },
+  { es:'el tomate', de:'die Tomate', pron:'[el to-MA-te]', example:'Tomate cherry en rodajas.', cat:'🍅 Gemüse', region:'all' },
+  { es:'la lechuga', de:'der Salat (Kopfsalat)', pron:'[la le-CHU-ga]', example:'Base de lechuga fresca.', cat:'🥬 Gemüse', region:'all' },
+  { es:'el pepino', de:'die Gurke', pron:'[el pe-PI-no]', example:'Pepino en tiras.', cat:'🥒 Gemüse', region:'all' },
+  { es:'la zanahoria', de:'die Karotte', pron:'[la tha-na-O-ria]', example:'Zanahoria rallada.', cat:'🥕 Gemüse', region:'all' },
+  { es:'el maíz / choclo', de:'der Mais', pron:'[el ma-ITH / CHO-klo]', example:'Con maíz dulce.', cat:'🌽 Gemüse', region:'spain:maíz,argentina:choclo' },
+  { es:'la cebolla', de:'die Zwiebel', pron:'[la the-BO-ya]', example:'Cebolla morada picada.', cat:'🧅 Gemüse', region:'all' },
+  { es:'el pimiento / morrón', de:'die Paprika', pron:'[el pi-MIEN-to / mo-RRON]', example:'Pimiento rojo asado.', cat:'🫑 Gemüse', region:'spain:pimiento,argentina:morrón' },
+  { es:'la rúcula / arugula', de:'die Rucola', pron:'[la RU-ku-la]', example:'Ensalada de rúcula.', cat:'🥬 Gemüse', region:'all' },
+  { es:'la espinaca', de:'der Spinat', pron:'[la es-pi-NA-ka]', example:'Smoothie verde con espinaca.', cat:'🥬 Gemüse', region:'all' },
+  { es:'el brócoli', de:'der Brokkoli', pron:'[el BRO-ko-li]', example:'Brócoli al vapor.', cat:'🥦 Gemüse', region:'all' },
+  { es:'la col / repollo', de:'der Kohl', pron:'[la kol / re-PO-yo]', example:'Col morada rallada.', cat:'🥬 Gemüse', region:'all' },
+  { es:'el edamame', de:'die Edamame', pron:'[el e-da-MA-me]', example:'Con edamame al lado.', cat:'🫛 Gemüse', region:'all' },
+  { es:'la remolacha / betabel', de:'die Rote Bete', pron:'[la re-mo-LA-cha / be-ta-BEL]', example:'Ensalada con remolacha.', cat:'🥗 Gemüse', region:'spain:remolacha,mexico:betabel' },
+  
+  // Kohlenhydrate & Extras
+  { es:'el arroz', de:'der Reis', pron:'[el a-ROTH]', example:'Base de arroz integral.', cat:'🍚 Beilage', region:'all' },
+  { es:'la quinoa / quinua', de:'die Quinoa', pron:'[la ki-NO-a]', example:'Bowl con quinoa.', cat:'🌾 Beilage', region:'all' },
+  { es:'los fideos / tallarines', de:'die Nudeln', pron:'[los fi-DE-os]', example:'Fideos de arroz.', cat:'🍜 Beilage', region:'all' },
+  { es:'los garbanzos', de:'die Kichererbsen', pron:'[los gar-BAN-thos]', example:'Ensalada con garbanzos.', cat:'🫘 Beilage', region:'all' },
+  { es:'las algas / nori', de:'die Algen / Nori', pron:'[las AL-gas]', example:'Sushi envuelto en algas.', cat:'🍣 Extras', region:'all' },
+  { es:'el sésamo / ajonjolí', de:'der Sesam', pron:'[el SE-sa-mo / a-hon-ho-LI]', example:'Espolvoreado con sésamo.', cat:'🌰 Extras', region:'spain:sésamo,mexico:ajonjolí' },
+  { es:'las semillas de chía', de:'die Chiasamen', pron:'[las se-MI-yas de CHI-a]', example:'Yogur con chía.', cat:'🌰 Extras', region:'all' },
+  { es:'la granola', de:'das Granola', pron:'[la gra-NO-la]', example:'Yogur con granola crujiente.', cat:'🥣 Extras', region:'all' },
+  
+  // Frutas
+  { es:'el plátano / banana', de:'die Banane', pron:'[el PLA-ta-no / ba-NA-na]', example:'Smoothie de plátano.', cat:'🍌 Obst', region:'spain:plátano,argentina:banana' },
+  { es:'la fresa / frutilla', de:'die Erdbeere', pron:'[la FRE-sa / fru-TI-ya]', example:'Smoothie de fresa.', cat:'🍓 Obst', region:'spain:fresa,argentina:frutilla' },
+  { es:'el mango', de:'die Mango', pron:'[el MAN-go]', example:'Bowl tropical con mango.', cat:'🥭 Obst', region:'all' },
+  { es:'la piña / ananá', de:'die Ananas', pron:'[la PI-nya / a-na-NA]', example:'Piña natural en trozos.', cat:'🍍 Obst', region:'spain:piña,argentina:ananá' },
+  { es:'el kiwi', de:'die Kiwi', pron:'[el KI-wi]', example:'Smoothie verde con kiwi.', cat:'🥝 Obst', region:'all' },
+  { es:'la sandía / melón de agua', de:'die Wassermelone', pron:'[la san-DI-a]', example:'Smoothie refrescante de sandía.', cat:'🍉 Obst', region:'all' },
+  
+  // Saucen & Dressings
+  { es:'la salsa de soja', de:'die Sojasoße', pron:'[la SAL-sa de SO-ha]', example:'Con salsa de soja al lado.', cat:'🥫 Soße', region:'all' },
+  { es:'la salsa picante', de:'die scharfe Soße', pron:'[la SAL-sa pi-KAN-te]', example:'¿Le pongo salsa picante?', cat:'🥫 Soße', region:'all' },
+  { es:'el aceite de oliva', de:'das Olivenöl', pron:'[el a-THEI-te de o-LI-ba]', example:'Aliñado con aceite de oliva.', cat:'🥫 Soße', region:'all' },
+  { es:'la mayonesa', de:'die Mayonnaise', pron:'[la ma-yo-NE-sa]', example:'Un toque de mayonesa.', cat:'🥫 Soße', region:'all' },
+  { es:'la salsa de yogur', de:'die Joghurtsoße', pron:'[la SAL-sa de yo-GUR]', example:'Salsa de yogur con hierbas.', cat:'🥫 Soße', region:'all' },
+  { es:'el limón / lima', de:'die Limette', pron:'[el li-MON / LI-ma]', example:'Con un chorrito de limón.', cat:'🍋 Extras', region:'all' },
+  
+  // Umgangssprachlich / Casual
+  { es:'el zumo / jugo', de:'der Saft', pron:'[el THU-mo / HU-go]', example:'Un zumo de naranja natural.', cat:'🥤 Getränke', region:'spain:zumo,latam:jugo' },
+  { es:'la patata / papa', de:'die Kartoffel', pron:'[la pa-TA-ta / PA-pa]', example:'Ensalada con patata cocida.', cat:'🥔 Gemüse', region:'spain:patata,latam:papa' },
+  { es:'las judías / frijoles', de:'die Bohnen', pron:'[las hu-DI-as / fri-HO-les]', example:'Bowl con frijoles negros.', cat:'🫘 Beilage', region:'spain:judías,latam:frijoles' },
+  { es:'el melocotón / durazno', de:'der Pfirsich', pron:'[el me-lo-ko-TON / du-RATH-no]', example:'Smoothie de durazno.', cat:'🍑 Obst', region:'spain:melocotón,latam:durazno' },
+  { es:'las alubias / porotos', de:'die weißen Bohnen', pron:'[las a-LU-bias / po-RO-tos]', example:'Ensalada con alubias.', cat:'🫘 Beilage', region:'spain:alubias,chile:porotos' },
+  { es:'el cacahuete / maní', de:'die Erdnuss', pron:'[el ka-ka-WE-te / ma-NI]', example:'Salsa de maní.', cat:'🥜 Extras', region:'spain:cacahuete,latam:maní' },
+  
+  // Smoothie/Bowl regional
+  { es:'el batido / licuado', de:'der Milchshake / Smoothie', pron:'[el ba-TI-do / li-KWA-do]', example:'Un licuado de frutilla.', cat:'🥤 Getränke', region:'spain:batido,argentina:licuado' },
+  { es:'el bol / tazón', de:'die Schüssel / Bowl', pron:'[el bol / ta-THON]', example:'Un tazón grande de açaí.', cat:'🍱 Gerichte', region:'spain:bol,mexico:tazón' },
+  
+  // Service andalusisch/kanarisch
+  { es:'¿Qué va a ser?', de:'Was wird\'s sein?', pron:'[ke ba a ser]', example:'¡Buenas! ¿Qué va a ser?', cat:'🗣️ Service', region:'spain-andalucia' },
+  { es:'¿Lo quiere pa llevar?', de:'Zum Mitnehmen? (andalusisch)', pron:'[lo KIE-re pa ye-BAR]', example:'¿Pa llevar o pa comer aquí?', cat:'🗣️ Service', region:'spain-andalucia,spain-canarias' },
+  { es:'Ahora te lo preparo, majo/maja', de:'Mach ich dir, Süße/r (andalusisch)', pron:'[a-O-ra te lo pre-PA-ro MA-ho]', example:'Vale maja, ahora mismo.', cat:'🗣️ Service', region:'spain-andalucia' },
+  
+  // Mexikanisch
+  { es:'¿Qué va a ordenar?', de:'Was möchten Sie bestellen? (MX)', pron:'[ke ba a or-de-NAR]', example:'¿Qué va a ordenar el día de hoy?', cat:'🗣️ Service', region:'mexico' },
+  { es:'¿Gusta algo más?', de:'Noch was gefällig? (MX höflich)', pron:'[GUS-ta AL-go mas]', example:'¿Gusta algo de tomar?', cat:'🗣️ Service', region:'mexico' },
+  
+  // Argentinisch
+  { es:'¿Qué vas a tomar, che?', de:'Was nimmst du? (AR)', pron:'[ke bas a to-MAR che]', example:'Che, ¿qué vas a tomar vos?', cat:'🗣️ Service', region:'argentina' },
+  { es:'Dale, te lo preparo', de:'Klar, mach ich dir (AR)', pron:'[DA-le]', example:'Dale boludo, ya te lo hago.', cat:'🗣️ Service', region:'argentina' },
+  
+  // ECHTE SPEISEKARTE VON LA GUAYABITA
+  { es:'el Poke de Atún', de:'Thunfisch Poke', pron:'[el PO-ke de a-TUN]', example:'Un Poke de Atún con mango, por favor.', cat:'🍱 Speisekarte', region:'all' },
+  { es:'el Poke de Salmón', de:'Lachs Poke', pron:'[el PO-ke de sal-MON]', example:'Para mí un Poke de Salmón.', cat:'🍱 Speisekarte', region:'all' },
+  { es:'el Poke de Pollo', de:'Hähnchen Poke', pron:'[el PO-ke de PO-yo]', example:'Poke de Pollo a la plancha o empanado.', cat:'🍱 Speisekarte', region:'all' },
+  { es:'el Poke de Tofu', de:'Tofu Poke (vegan)', pron:'[el PO-ke de TO-fu]', example:'Un Poke de Tofu, es vegetariano.', cat:'🍱 Speisekarte', region:'all' },
+  { es:'¡Crea tu Poke!', de:'Bau dir dein Poke!', pron:'[KRE-a tu PO-ke]', example:'¿Quieres crear tu propio Poke?', cat:'🗣️ Service', region:'all' },
+  
+  { es:'el Sushi Roll de Atún', de:'Thunfisch Sushi Roll', pron:'[el SU-shi rol de a-TUN]', example:'Un Sushi Roll de Atún, por favor.', cat:'🍣 Speisekarte', region:'all' },
+  { es:'el Sushi Roll de Salmón', de:'Lachs Sushi Roll', pron:'[el SU-shi rol de sal-MON]', example:'Sushi Roll de Salmón con salsa Poke.', cat:'🍣 Speisekarte', region:'all' },
+  { es:'el Sushi Roll Teriyaki', de:'Teriyaki Sushi Roll', pron:'[el SU-shi rol te-ri-YA-ki]', example:'Roll Teriyaki con pollo rebozado.', cat:'🍣 Speisekarte', region:'all' },
+  { es:'el Sushi Roll Rainbow', de:'Rainbow Sushi Roll', pron:'[el SU-shi rol REIN-bou]', example:'El Roll Rainbow lleva atún, salmón, aguacate y mango.', cat:'🍣 Speisekarte', region:'all' },
+  { es:'el Sushi Roll Fuera de Carta', de:'Sushi Roll außer der Karte', pron:'[el SU-shi rol FWE-ra de KAR-ta]', example:'¿Tienes algún Roll fuera de carta hoy?', cat:'🍣 Speisekarte', region:'all' },
+  
+  { es:'la Ensalada César', de:'Caesar Salad', pron:'[la en-sa-LA-da THE-sar]', example:'Una Ensalada César con pollo empanado.', cat:'🥗 Speisekarte', region:'all' },
+  { es:'la Ensalada Tropical', de:'Tropical Salad', pron:'[la en-sa-LA-da tro-pi-KAL]', example:'Ensalada Tropical con langostinos y piña.', cat:'🥗 Speisekarte', region:'all' },
+  { es:'la Ensalada Caprina', de:'Ziegenkäse Salad', pron:'[la en-sa-LA-da ka-PRI-na]', example:'La Caprina lleva rulo de cabra y frutos secos.', cat:'🥗 Speisekarte', region:'all' },
+  { es:'la Ensalada Toscana', de:'Toskanischer Salat', pron:'[la en-sa-LA-da tos-KA-na]', example:'Toscana con aguacate y mozzarella fresco.', cat:'🥗 Speisekarte', region:'all' },
+  
+  { es:'el Yogurt Mix', de:'Joghurt Mix (selbst zusammenstellen)', pron:'[el yo-GURT miks]', example:'¿Quieres crear tu Yogurt Mix?', cat:'🥣 Speisekarte', region:'all' },
+  
+  { es:'el Mojito', de:'der Mojito', pron:'[el mo-HI-to]', example:'Un Mojito con hierbabuena fresca.', cat:'🍹 Speisekarte', region:'all' },
+  { es:'la Piña Colada', de:'die Piña Colada', pron:'[la PI-nya ko-LA-da]', example:'Una Piña Colada bien cremosa.', cat:'🍹 Speisekarte', region:'all' },
+  { es:'el Daiquiri', de:'der Daiquiri', pron:'[el dai-ki-RI]', example:'Un Daiquiri de fresa, por favor.', cat:'🍹 Speisekarte', region:'all' },
+  
+  { es:'el Smoothie Tropical', de:'Tropical Smoothie', pron:'[el es-MU-di tro-pi-KAL]', example:'Smoothie Tropical con mango, plátano y piña.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'el Smoothie Guayabita', de:'Guayabita Smoothie', pron:'[el es-MU-di gwa-ya-BI-ta]', example:'El Smoothie Guayabita lleva guayaba y maracuyá.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'el Smoothie Tarifa', de:'Tarifa Smoothie', pron:'[el es-MU-di ta-RI-fa]', example:'Smoothie Tarifa de fresa y plátano.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'el Smoothie Pasión', de:'Passion Smoothie', pron:'[el es-MU-di pa-SION]', example:'Pasión con fresa, kiwi y manzana.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'el Smoothie Levante', de:'Levante Smoothie', pron:'[el es-MU-di le-BAN-te]', example:'Levante de melón y sandía.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'la Limonada', de:'die Limonade', pron:'[la li-mo-NA-da]', example:'Una Limonada natural con hielo.', cat:'🥤 Speisekarte', region:'all' },
+  { es:'el Smoothie Malibu', de:'Malibu Smoothie', pron:'[el es-MU-di ma-li-BU]', example:'Malibu con piña, plátano y leche de coco.', cat:'🥤 Speisekarte', region:'all' },
+  
+  // SPEZIFISCHE ZUTATEN VON DER KARTE
+  { es:'el alga wakame', de:'die Wakame-Alge', pron:'[el AL-ga wa-KA-me]', example:'¿Le pongo alga wakame?', cat:'🍣 Zutaten', region:'all' },
+  { es:'la salsa Mayo Kimchi', de:'die Mayo-Kimchi-Sauce', pron:'[la SAL-sa MA-yo KIM-chi]', example:'Con salsa Mayo Kimchi, ¿vale?', cat:'🥫 Soßen', region:'all' },
+  { es:'la salsa Poke', de:'die Poke-Sauce', pron:'[la SAL-sa PO-ke]', example:'Salsa Poke por encima.', cat:'🥫 Soßen', region:'all' },
+  { es:'la salsa Teriyaki', de:'die Teriyaki-Sauce', pron:'[la SAL-sa te-ri-YA-ki]', example:'¿Quieres salsa Teriyaki?', cat:'🥫 Soßen', region:'all' },
+  { es:'la salsa Agridulce', de:'die süß-saure Sauce', pron:'[la SAL-sa a-gri-DUL-the]', example:'Con salsa Agridulce.', cat:'🥫 Soßen', region:'all' },
+  { es:'la salsa César casera', de:'selbstgemachte Caesar-Sauce', pron:'[la SAL-sa THE-sar ka-SE-ra]', example:'Salsa César casera, nuestra receta.', cat:'🥫 Soßen', region:'all' },
+  { es:'la salsa Cocktail', de:'die Cocktail-Sauce', pron:'[la SAL-sa KOK-teil]', example:'Ensalada con salsa cocktail.', cat:'🥫 Soßen', region:'all' },
+  { es:'la vinagreta balsámica', de:'das Balsamico-Dressing', pron:'[la bi-na-GRE-ta bal-SA-mi-ka]', example:'Con vinagreta balsámica.', cat:'🥫 Soßen', region:'all' },
+  { es:'la vinagreta de pesto', de:'das Pesto-Dressing', pron:'[la bi-na-GRE-ta de PES-to]', example:'Vinagreta de pesto casera.', cat:'🥫 Soßen', region:'all' },
+  
+  { es:'la cebolla frita / crunchy', de:'die knusprige Zwiebel', pron:'[la the-BO-ya FRI-ta / KRUN-chi]', example:'Con cebolla crunchy por encima.', cat:'🧅 Toppings', region:'all' },
+  { es:'las nueces', de:'die Walnüsse', pron:'[las NWE-thes]', example:'¿Le pongo nueces?', cat:'🌰 Toppings', region:'all' },
+  { es:'los quesitos / dados de queso', de:'Käsewürfel', pron:'[los ke-SI-tos]', example:'Con quesitos en dados.', cat:'🧀 Toppings', region:'all' },
+  { es:'el bacon', de:'der Speck', pron:'[el BEI-kon]', example:'Ensalada César con bacon crujiente.', cat:'🥓 Toppings', region:'all' },
+  { es:'los picatostes', de:'die Croutons', pron:'[los pi-ka-TOS-tes]', example:'Con picatostes dorados.', cat:'🍞 Toppings', region:'all' },
+  { es:'los langostinos', de:'die Garnelen / Scampi', pron:'[los lan-gos-TI-nos]', example:'Ensalada Tropical con langostinos.', cat:'🦐 Protein', region:'all' },
+  { es:'los palitos de cangrejo', de:'die Krabbensticks', pron:'[los pa-LI-tos de kan-GRE-ho]', example:'Con palitos de cangrejo.', cat:'🦀 Protein', region:'all' },
+  { es:'el rulo de cabra', de:'der Ziegenkäse (Rolle)', pron:'[el RU-lo de KA-bra]', example:'Ensalada Caprina con rulo de cabra.', cat:'🧀 Toppings', region:'all' },
+  { es:'la cebolla caramelizada', de:'die karamellisierte Zwiebel', pron:'[la the-BO-ya ka-ra-me-li-THA-da]', example:'Con cebolla caramelizada.', cat:'🧅 Toppings', region:'all' },
+  { es:'los frutos secos', de:'die Nüsse / Trockenfrüchte', pron:'[los FRU-tos SE-kos]', example:'Ensalada con frutos secos variados.', cat:'🌰 Toppings', region:'all' },
+  { es:'la mozzarella fresco', de:'der frische Mozzarella', pron:'[la mot-tha-RE-ya FRES-ko]', example:'Mozzarella fresco en la ensalada.', cat:'🧀 Toppings', region:'all' },
+  
+  // YOGURT MIX ZUTATEN
+  { es:'el yogur griego', de:'griechischer Joghurt', pron:'[el yo-GUR GRE-go]', example:'Base de yogur griego natural.', cat:'🥣 Basis', region:'all' },
+  { es:'el yogur sin lactosa', de:'laktosefreier Joghurt', pron:'[el yo-GUR sin lak-TO-sa]', example:'¿Tienes yogur sin lactosa?', cat:'🥣 Basis', region:'all' },
+  { es:'el yogur vegetal / vegano', de:'pflanzlicher Joghurt', pron:'[el yo-GUR be-he-TAL]', example:'Yogur vegano de soja.', cat:'🥣 Basis', region:'all' },
+  { es:'el muesli crujiente', de:'knuspriges Müsli', pron:'[el MUS-li kru-HIEN-te]', example:'Con muesli crujiente.', cat:'🥣 Crunchy', region:'all' },
+  { es:'los copos de avena', de:'Haferflocken', pron:'[los KO-pos de a-BE-na]', example:'Copos de avena integrales.', cat:'🥣 Crunchy', region:'all' },
+  { es:'los copos de maíz', de:'Cornflakes', pron:'[los KO-pos de ma-ITH]', example:'Copos de maíz tostados.', cat:'🥣 Crunchy', region:'all' },
+  { es:'la galleta María', de:'Butterkeks', pron:'[la ga-YE-ta ma-RI-a]', example:'Galleta María triturada.', cat:'🥣 Crunchy', region:'all' },
+  { es:'el sirope', de:'der Sirup', pron:'[el si-RO-pe]', example:'¿Qué sirope prefieres?', cat:'🍯 Topping', region:'all' },
+  { es:'el sirope de chocolate', de:'Schokoladensirup', pron:'[el si-RO-pe de cho-ko-LA-te]', example:'Sirope de chocolate negro.', cat:'🍯 Topping', region:'all' },
+  { es:'la miel', de:'der Honig', pron:'[la miel]', example:'Un chorrito de miel.', cat:'🍯 Topping', region:'all' },
+  { es:'el sirope de fresa', de:'Erdbeersirup', pron:'[el si-RO-pe de FRE-sa]', example:'Sirope de fresa natural.', cat:'🍯 Topping', region:'all' },
+  { es:'el Kinder Bueno', de:'Kinder Bueno (Schokolade)', pron:'[el KIN-der BWE-no]', example:'Con trocitos de Kinder Bueno.', cat:'🍯 Topping', region:'all' },
+  { es:'la leche condensada', de:'Kondensmilch', pron:'[la LE-che kon-den-SA-da]', example:'Un poco de leche condensada.', cat:'🍯 Topping', region:'all' },
+  { es:'las virutas de chocolate', de:'Schokoraspel', pron:'[las bi-RU-tas de cho-ko-LA-te]', example:'Virutas de chocolate blanco.', cat:'🍫 Topping', region:'all' },
+  { es:'los arándanos', de:'die Blaubeeren', pron:'[los a-RAN-da-nos]', example:'Con arándanos frescos.', cat:'🫐 Obst', region:'all' },
+  { es:'las frambuesas', de:'die Himbeeren', pron:'[las fram-BWE-sas]', example:'Frambuesas de temporada.', cat:'🍓 Obst', region:'all' },
+  { es:'el melocotón', de:'der Pfirsich', pron:'[el me-lo-ko-TON]', example:'Melocotón en almíbar.', cat:'🍑 Obst', region:'spain' },
+  { es:'la fruta de temporada', de:'saisonales Obst', pron:'[la FRU-ta de tem-po-RA-da]', example:'Hoy tenemos fruta de temporada.', cat:'🍎 Obst', region:'all' },
+  
+  // COCKTAIL ZUTATEN
+  { es:'el zumo de lima', de:'Limettensaft', pron:'[el THU-mo de LI-ma]', example:'Mojito con zumo de lima fresco.', cat:'🍋 Zutaten', region:'all' },
+  { es:'el azúcar moreno', de:'brauner Zucker', pron:'[el a-THU-kar mo-RE-no]', example:'Con azúcar moreno.', cat:'🍯 Zutaten', region:'all' },
+  { es:'la hierbabuena fresca', de:'frische Minze', pron:'[la IER-ba-BWE-na FRES-ka]', example:'Mojito con hierbabuena fresca machacada.', cat:'🌿 Zutaten', region:'all' },
+  { es:'el ron blanco', de:'weißer Rum', pron:'[el ron BLAN-ko]', example:'Con ron blanco de calidad.', cat:'🥃 Alkohol', region:'all' },
+  { es:'la leche de coco', de:'Kokosmilch', pron:'[la LE-che de KO-ko]', example:'Piña Colada con leche de coco cremosa.', cat:'🥥 Zutaten', region:'all' },
+  { es:'la guayaba', de:'die Guave', pron:'[la gwa-YA-ba]', example:'Smoothie Guayabita con guayaba y maracuyá.', cat:'🍈 Obst', region:'all' },
+  { es:'el maracuyá', de:'die Maracuja', pron:'[el ma-ra-ku-YA]', example:'Maracuyá fresco del día.', cat:'🍈 Obst', region:'all' },
+  { es:'el melón', de:'die Melone', pron:'[el me-LON]', example:'Smoothie Levante de melón y sandía.', cat:'🍉 Obst', region:'all' },
+  
+  // SERVICE-PHRASEN SPEZIFISCH
+  { es:'¿A la plancha o empanado?', de:'Gegrillt oder paniert?', pron:'[a la PLAN-cha o em-pa-NA-do]', example:'El pollo, ¿a la plancha o empanado?', cat:'🗣️ Service', region:'all' },
+  { es:'¿Con qué base?', de:'Mit welcher Basis?', pron:'[kon ke BA-se]', example:'Tu Poke, ¿con qué base? ¿Arroz o quinoa?', cat:'🗣️ Service', region:'all' },
+  { es:'Rellena el flyer', de:'Füll das Formular aus', pron:'[re-YE-na el FLAI-er]', example:'Para crear tu Poke, rellena este flyer.', cat:'🗣️ Service', region:'all' },
+  { es:'en el mostrador', de:'an der Theke', pron:'[en el mos-tra-DOR]', example:'Pídelo en el mostrador.', cat:'🗣️ Service', region:'all' },
+  { es:'cortado en 8-10 piezas', de:'in 8-10 Stücke geschnitten', pron:'[kor-TA-do en O-cho DIETH PIE-thas]', example:'El Sushi Roll viene cortado en 8-10 piezas.', cat:'🗣️ Service', region:'all' },
+  { es:'hecho al momento', de:'frisch zubereitet', pron:'[E-cho al mo-MEN-to]', example:'Todo hecho al momento, recién preparado.', cat:'🗣️ Service', region:'all' },
+  { es:'¿Quieres probarlo?', de:'Willst du es probieren?', pron:'[KIE-res pro-BAR-lo]', example:'Tenemos un Roll nuevo, ¿quieres probarlo?', cat:'🗣️ Service', region:'all' },
+  { es:'cada mes probamos nuevas ideas', de:'jeden Monat probieren wir neue Ideen', pron:'[KA-da mes pro-BA-mos NWE-bas i-DE-as]', example:'Cada mes probamos nuevas ideas, ¡pregúntanos!', cat:'🗣️ Service', region:'all' },
+  { es:'si el turno nos lo permite', de:'wenn die Schicht es zulässt', pron:'[si el TUR-no nos lo per-MI-te]', example:'Si el turno nos lo permite, podemos innovar.', cat:'🗣️ Service', region:'all' },
+  { es:'ingredientes 100% naturales', de:'100% natürliche Zutaten', pron:'[in-gre-DIEN-tes THIEN por THIEN na-tu-RA-les]', example:'Usamos ingredientes 100% naturales.', cat:'🗣️ Service', region:'all' },
+  { es:'receta original', de:'Original-Rezept', pron:'[re-THE-ta o-ri-hi-NAL]', example:'Nuestra receta original del Mojito.', cat:'🗣️ Service', region:'all' },
+  { es:'como nunca antes la has visto', de:'wie du es noch nie gesehen hast', pron:'[KO-mo NUN-ka AN-tes la as BIS-to]', example:'¡Como nunca antes la has visto!', cat:'💬 Marketing', region:'all' },
+  { es:'¡Irresistible!', de:'Unwiderstehlich!', pron:'[i-re-sis-TI-ble]', example:'La Piña Colada, ¡irresistible!', cat:'💬 Marketing', region:'all' },
+  { es:'nuestro Best Seller', de:'unser Bestseller', pron:'[NWES-tro best SE-ler]', example:'El Mojito es nuestro Best Seller.', cat:'💬 Marketing', region:'all' },
+  
+  { es:'Está de vicio', de:'Das ist mega lecker / der Hammer', pron:'[es-TA de BI-thio]', example:'Prueba este poké, está de vicio.', cat:'💬 Slang', region:'spain' },
+  { es:'¡Qué rico!', de:'Lecker! / Geil!', pron:'[ke RI-ko]', example:'¡Qué rico está el salmón!', cat:'💬 Slang', region:'all' },
+  { es:'Una pasada', de:'Hammer / krass gut', pron:'[U-na pa-SA-da]', example:'El smoothie de mango es una pasada.', cat:'💬 Slang', region:'spain' },
+  { es:'¿Algo de beber?', de:'Was zu trinken?', pron:'[AL-go de be-BER]', example:'¿Algo de beber para acompañar?', cat:'🥤 Service', region:'all' },
+  { es:'Aquí tienes', de:'Hier hast du / Bitte sehr', pron:'[a-KI TIE-nes]', example:'Aquí tienes tu poké, ¡buen provecho!', cat:'🗣️ Service', region:'all' },
+  { es:'¡Buen provecho!', de:'Guten Appetit!', pron:'[bwen pro-BE-cho]', example:'¡Buen provecho! Que lo disfrutes.', cat:'🗣️ Service', region:'all' },
+  { es:'¿Te gusta picante?', de:'Magst du scharf?', pron:'[te GUS-ta pi-KAN-te]', example:'¿Te gusta picante o mejor suave?', cat:'🗣️ Service', region:'all' },
+  { es:'Sin problema', de:'Kein Problem / Klar', pron:'[sin pro-BLE-ma]', example:'Sin aguacate, sin problema.', cat:'💬 Slang', region:'all' },
+  { es:'Marchando', de:'Kommt sofort / Läuft', pron:'[mar-CHAN-do]', example:'¡Marchando un poké de atún!', cat:'🗣️ Service', region:'spain' },
+];
+
 // ══════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════
@@ -1323,6 +1627,7 @@ let state = {
   vocab: [],
   cardIndex: 0,
   cardStatus: {}, // { index: 'new'|'learning'|'learned' }
+  cardQueue: [], // Spaced repetition queue
   xp: 0,
   streak: 1,
   dailyDone: 0,
@@ -1330,6 +1635,8 @@ let state = {
   quizTotal: 0,
   quizCorrect: 0,
   currentCat: 'all',
+  learningDirection: 'es-de', // 'es-de' oder 'de-es' oder 'both'
+  region: 'spain-castilla', // Spanish dialects
 };
 
 // ══════════════════════════════════════════════════════
@@ -1396,6 +1703,8 @@ function initCatTabs() {
       document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
       d.classList.add('active');
       state.cardIndex = 0;
+      state.cardQueue = []; // Reset queue
+      buildCardQueue(); // Rebuild for new category
       loadCard();
     };
     container.appendChild(d);
@@ -1419,16 +1728,15 @@ function filteredVocab() {
 // FLASHCARDS
 // ══════════════════════════════════════════════════════
 function loadCard() {
-  const vocab = filteredVocab();
-  const cardActions = document.getElementById('cardActions');
-  
-  if (!vocab.length) {
-    // Fallback wenn keine Vokabeln vorhanden
+  if (state.cardQueue.length === 0) buildCardQueue();
+  if (state.cardQueue.length === 0) {
+    // Keine Karten verfügbar
     document.getElementById('cardWordEs').textContent = '—';
     document.getElementById('cardPronun').textContent = '';
     document.getElementById('cardCat').textContent = '';
     document.getElementById('cardWordDe').textContent = 'Keine Vokabeln';
     document.getElementById('cardExample').textContent = 'Wechsle die Kategorie oder Nische';
+    const cardActions = document.getElementById('cardActions');
     if (cardActions) {
       cardActions.querySelectorAll('button').forEach(btn => btn.disabled = true);
       cardActions.style.opacity = '0.5';
@@ -1437,20 +1745,32 @@ function loadCard() {
   }
   
   // Enable buttons
+  const cardActions = document.getElementById('cardActions');
   if (cardActions) {
     cardActions.querySelectorAll('button').forEach(btn => btn.disabled = false);
     cardActions.style.opacity = '1';
   }
   
-  const v = vocab[state.cardIndex % vocab.length];
+  const realIndex = state.cardQueue[0];
+  const v = state.vocab[realIndex];
+  if (!v) {
+    buildCardQueue();
+    return loadCard();
+  }
+  
   const card = document.getElementById('flashcard');
   card.classList.remove('flipped');
-  document.getElementById('cardWordEs').textContent = v.es;
-  document.getElementById('cardPronun').textContent = v.pron;
+  
+  // Lernrichtung beachten
+  const showEs = state.learningDirection === 'es-de' || (state.learningDirection === 'both' && Math.random() > 0.5);
+  
+  document.getElementById('cardWordEs').textContent = showEs ? v.es : v.de;
+  document.getElementById('cardPronun').textContent = showEs ? v.pron : '';
   document.getElementById('cardCat').textContent = v.cat;
-  document.getElementById('cardWordDe').textContent = v.de;
+  document.getElementById('cardWordDe').textContent = showEs ? v.de : v.es;
   document.getElementById('cardExample').textContent = v.example;
-  // Automatisch vorlesen
+  
+  // Automatisch vorlesen (nur Spanisch)
   setTimeout(() => speak(v.es), 300);
 }
 
@@ -1459,13 +1779,9 @@ function flipCard() {
 }
 
 function nextCard(result) {
-  const vocab = filteredVocab();
-  if (!vocab.length) return;
+  if (state.cardQueue.length === 0) return;
   
-  const currentCard = vocab[state.cardIndex % vocab.length];
-  const realIndex = state.vocab.indexOf(currentCard);
-  
-  if (realIndex === -1) return; // Safety check
+  const realIndex = state.cardQueue.shift(); // Remove from front of queue
   
   if (result==='easy') {
     state.cardStatus[realIndex] = 'learned';
@@ -1475,11 +1791,14 @@ function nextCard(result) {
     checkMilestone();
   } else if (result==='hard') {
     state.cardStatus[realIndex] = 'learning';
+    state.cardQueue.push(realIndex); // Add back to queue for review
     addXP(3);
     state.dailyDone++;
     updateProgress();
+  } else if (result==='skip') {
+    state.cardQueue.push(realIndex); // Add back to end
   }
-  state.cardIndex = (state.cardIndex + 1) % vocab.length;
+  
   const card = document.getElementById('flashcard');
   card.style.opacity = '0';
   card.style.transform = 'translateX(30px)';
@@ -1565,7 +1884,8 @@ function checkQuiz(btn, chosen, correct, direction) {
   if (!isCorrect) {
     btn.classList.add('wrong');
     fb.className = 'feedback-box wrong';
-    fb.innerHTML = `❌ Leider falsch!<br><strong>Richtig:</strong> ${direction ? correct.de : correct.es}<br><em>${correct.example}</em>`;
+    fb.innerHTML = `❌ Leider falsch! <strong>-5 XP</strong><br><strong>Richtig:</strong> ${direction ? correct.de : correct.es}<br><em>${correct.example}</em>`;
+    addXP(-5); // XP-Abzug bei falscher Antwort
     // Richtige Antwort vorlesen
     setTimeout(() => speak(correct.es), 500);
   } else {
@@ -1640,7 +1960,8 @@ function checkWrite() {
   } else {
     inp.className = 'write-input wrong';
     fb.className = 'feedback-box wrong';
-    fb.innerHTML = `❌ Fast! Die richtige Antwort: <strong>${currentWrite.es}</strong><br>${currentWrite.pron}<br><em>${currentWrite.example}</em>`;
+    fb.innerHTML = `❌ Fast! <strong>-5 XP</strong><br>Richtig: <strong>${currentWrite.es}</strong><br>${currentWrite.pron}<br><em>${currentWrite.example}</em>`;
+    addXP(-5); // XP-Abzug
     setTimeout(() => speak(currentWrite.es), 500);
   }
 
@@ -1694,30 +2015,6 @@ function renderPronTips() {
     `;
     container.appendChild(div);
   });
-}
-
-// ══════════════════════════════════════════════════════
-// XP & PROGRESS
-// ══════════════════════════════════════════════════════
-function addXP(amount) {
-  state.xp += amount;
-  const xpEl = document.getElementById('xpCount');
-  xpEl.textContent = state.xp;
-  xpEl.classList.add('pop');
-  setTimeout(()=>xpEl.classList.remove('pop'), 350);
-  saveState();
-}
-
-function updateProgress() {
-  const pct = Math.min(state.dailyDone / state.dailyGoal * 100, 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = state.dailyDone + ' / ' + state.dailyGoal;
-  if (state.dailyDone >= state.dailyGoal) {
-    state.streak++;
-    document.getElementById('streakCount').textContent = state.streak;
-    showToast('🔥 Tagesziel erreicht! Streak: ' + state.streak + ' Tage');
-  }
-  saveState();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1855,6 +2152,7 @@ function switchNiche(key, el) {
   state.vocab = VOCAB[key] || VOCAB['urlaub'];
   state.cardIndex = 0;
   state.currentCat = 'all'; // Reset category filter
+  state.cardQueue = []; // Reset queue
   
   // Load new niche's cardStatus
   state.cardStatus = {};
@@ -1866,12 +2164,14 @@ function switchNiche(key, el) {
 
   const nicheNames = { 
     urlaub:'Urlaub', alltag:'Alltag', grundwortschatz:'Grundwortschatz', 
-    social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin' 
+    social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin',
+    guayabita:'Guayabita'
   };
   const btn = document.getElementById('nicheBtn');
   if (btn) btn.textContent = '🌍 ' + (nicheNames[key] || key);
 
   initCatTabs();
+  buildCardQueue(); // Rebuild queue
   loadCard();
   loadQuiz();
   loadWrite();
@@ -1891,6 +2191,143 @@ document.getElementById('certModal').addEventListener('click', function(e) {
 document.getElementById('pdfModal').addEventListener('click', function(e) {
   if (e.target === this) closePdfModal();
 });
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+  if (e.target === this) hideSettings();
+});
+
+// ══════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════
+function showSettings() {
+  document.getElementById('settingsModal').style.display = 'flex';
+  document.getElementById('goalDisplay').textContent = state.dailyGoal + ' Vokabeln / Tag';
+  const sel = document.getElementById('regionSelect');
+  if (sel) sel.value = state.region;
+  // Trigger region info update
+  setRegion(state.region);
+  // Radio buttons updaten
+  document.querySelectorAll('input[name="direction"]').forEach(r => {
+    r.checked = r.value === state.learningDirection;
+  });
+}
+function hideSettings() {
+  document.getElementById('settingsModal').style.display = 'none';
+  saveState();
+}
+function setDirection(dir) {
+  state.learningDirection = dir;
+  showToast('Lernrichtung geändert!');
+}
+function setRegion(reg) {
+  state.region = reg;
+  
+  const regionInfo = {
+    'spain-castilla': '<strong>Kastilien:</strong> Hochspanisch mit "th" für z/c (gracias = [GRA-thias]). Klare Aussprache.',
+    'spain-andalucia': '<strong>Andalusien:</strong> "Seseo" (z/c = s), verschluckt oft "s" am Ende. "¿Cómo ehtáh?" statt "¿Cómo estás?"',
+    'spain-cataluna': '<strong>Katalonien:</strong> Katalanischer Einfluss, offenere Vokale. Viele sprechen auch Katalanisch.',
+    'spain-canarias': '<strong>Kanaren:</strong> Klingt wie Lateinamerika, kein "th". Seseo wie in Andalusien.',
+    'mexico': '<strong>Mexiko:</strong> Klares Spanisch, "jugo" statt "zumo", "platicar" (plaudern). Höflich & langsam.',
+    'argentina': '<strong>Argentinien:</strong> "Voseo" (vos statt tú), "ll/y" = "sh" (calle = [KA-she]). "Che" am Satzende.',
+    'colombia': '<strong>Kolumbien:</strong> Eines der klarsten Spanisch weltweit. Bogotá-Akzent gilt als Referenz.',
+    'chile': '<strong>Chile:</strong> Sehr schnell, verschluckt Silben. "¿Cachai?" (verstehst du?). Schwer zu verstehen.',
+    'peru': '<strong>Peru:</strong> Klares Andenspanisch, höflich. Mix aus Quechua-Einflüssen.',
+    'venezuela': '<strong>Venezuela:</strong> Karibischer Akzent, "¿Qué pasó pues?" Sehr melodisch.',
+    'cuba': '<strong>Kuba:</strong> Verschluckt "s" oft komplett. "¿Cómo etá?" statt "¿Cómo estás?"',
+    'republicadominicana': '<strong>Dom. Rep.:</strong> Sehr schnell, verschluckt "r/l". "Tú ta bien" statt "Tú estás bien".'
+  };
+  
+  const infoEl = document.getElementById('regionInfo');
+  if (infoEl) infoEl.innerHTML = regionInfo[reg] || '';
+  
+  const shortNames = {
+    'spain-castilla':'Kastilien','spain-andalucia':'Andalusien','spain-cataluna':'Katalonien','spain-canarias':'Kanaren',
+    'mexico':'Mexiko','argentina':'Argentinien','colombia':'Kolumbien','chile':'Chile',
+    'peru':'Peru','venezuela':'Venezuela','cuba':'Kuba','republicadominicana':'Dom. Rep.'
+  };
+  
+  showToast('Region: ' + (shortNames[reg] || reg));
+  saveState();
+}
+function updateGoal(val) {
+  state.dailyGoal = parseInt(val);
+  document.getElementById('goalDisplay').textContent = val + ' Vokabeln / Tag';
+}
+
+// ══════════════════════════════════════════════════════
+// SPACED REPETITION - CARD QUEUE
+// ══════════════════════════════════════════════════════
+function buildCardQueue() {
+  const vocab = filteredVocab();
+  const newCards = [];
+  const learningCards = [];
+  const learnedCards = [];
+  
+  vocab.forEach((v, i) => {
+    const realIndex = state.vocab.indexOf(v);
+    const status = state.cardStatus[realIndex] || 'new';
+    if (status === 'new') newCards.push(realIndex);
+    else if (status === 'learning') learningCards.push(realIndex);
+    else learnedCards.push(realIndex);
+  });
+  
+  // Queue: 3 neue, 2 lernende, 1 gelernte (Wiederholung)
+  state.cardQueue = [];
+  while (newCards.length > 0 || learningCards.length > 0 || learnedCards.length > 0) {
+    for (let i=0; i<3 && newCards.length>0; i++) {
+      state.cardQueue.push(newCards.shift());
+    }
+    for (let i=0; i<2 && learningCards.length>0; i++) {
+      state.cardQueue.push(learningCards.shift());
+    }
+    if (learnedCards.length > 0 && Math.random() > 0.7) {
+      state.cardQueue.push(learnedCards.shift());
+    }
+  }
+  
+  if (state.cardQueue.length === 0) {
+    // Fallback: alle Karten
+    state.cardQueue = vocab.map((_,i) => state.vocab.indexOf(vocab[i]));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// XP MIT ABZUG BEI FEHLERN
+// ══════════════════════════════════════════════════════
+function addXP(amount) {
+  state.xp = Math.max(0, state.xp + amount); // Kann nicht unter 0 fallen
+  const xpEl = document.getElementById('xpCount');
+  xpEl.textContent = state.xp;
+  xpEl.classList.add('pop');
+  if (amount < 0) {
+    xpEl.style.color = 'var(--terra)';
+    setTimeout(() => { xpEl.style.color = ''; }, 600);
+  }
+  setTimeout(()=>xpEl.classList.remove('pop'), 350);
+  saveState();
+}
+
+// ══════════════════════════════════════════════════════
+// DYNAMISCHES TAGESZIEL
+// ══════════════════════════════════════════════════════
+function updateProgress() {
+  const pct = Math.min(state.dailyDone / state.dailyGoal * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  
+  if (state.dailyDone >= state.dailyGoal) {
+    document.getElementById('progressPct').textContent = '✓ Ziel erreicht!';
+    document.getElementById('progressLabel').textContent = 'Heute geschafft';
+    if (!localStorage.getItem('habla_goal_reached_today')) {
+      localStorage.setItem('habla_goal_reached_today', new Date().toDateString());
+      state.streak++;
+      document.getElementById('streakCount').textContent = state.streak;
+      showToast('🔥 Tagesziel erreicht! Streak: ' + state.streak + ' Tage', 4000);
+    }
+  } else {
+    document.getElementById('progressPct').textContent = state.dailyDone + ' / ' + state.dailyGoal;
+    document.getElementById('progressLabel').textContent = 'Fortschritt heute';
+  }
+  saveState();
+}
 
 // ══════════════════════════════════════════════════════
 // LEADERBOARD
@@ -1969,7 +2406,8 @@ function shareNative() {
 const NICHE_NAMES = {
   urlaub:'Urlaub & Reisen', alltag:'Alltag & Einkaufen',
   grundwortschatz:'Grundwortschatz', social:'Smalltalk & Soziales',
-  beruf:'Beruf & Business', kinder:'Spanisch für Kinder', medizin:'Medizin & Gesundheit'
+  beruf:'Beruf & Business', kinder:'Spanisch für Kinder', medizin:'Medizin & Gesundheit',
+  guayabita:'La Guayabita (Imbiss)'
 };
 
 function showCertModal() {
@@ -2064,14 +2502,17 @@ const LS_KEY = 'habla_save_v1';
 
 function saveState() {
   const toSave = {
-    niche:       state.niche,
-    cardStatus:  state.cardStatus,
-    xp:          state.xp,
-    streak:      state.streak,
-    dailyDone:   state.dailyDone,
-    lastSaved:   new Date().toDateString(),
-    quizTotal:   state.quizTotal,
-    quizCorrect: state.quizCorrect,
+    niche:             state.niche,
+    cardStatus:        state.cardStatus,
+    xp:                state.xp,
+    streak:            state.streak,
+    dailyDone:         state.dailyDone,
+    dailyGoal:         state.dailyGoal,
+    lastSaved:         new Date().toDateString(),
+    quizTotal:         state.quizTotal,
+    quizCorrect:       state.quizCorrect,
+    learningDirection: state.learningDirection,
+    region:            state.region,
   };
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(toSave));
@@ -2116,16 +2557,18 @@ const saved = loadState();
 
 if (saved) {
   // Gespeicherten Stand wiederherstellen: Onboarding überspringen
-  state.niche       = saved.niche;
-  state.cardStatus  = saved.cardStatus || {};
-  state.xp          = saved.xp || 0;
-  state.streak      = saved.streak || 1;
-  state.quizTotal   = saved.quizTotal || 0;
-  state.quizCorrect = saved.quizCorrect || 0;
-  state.dailyDone   = saved.dailyDone || 0;
-  state.vocab       = VOCAB[state.niche] || VOCAB['urlaub'];
-  state.dailyGoal   = 10;
-  state.currentCat  = 'all';
+  state.niche            = saved.niche;
+  state.cardStatus       = saved.cardStatus || {};
+  state.xp               = saved.xp || 0;
+  state.streak           = saved.streak || 1;
+  state.quizTotal        = saved.quizTotal || 0;
+  state.quizCorrect      = saved.quizCorrect || 0;
+  state.dailyDone        = saved.dailyDone || 0;
+  state.dailyGoal        = saved.dailyGoal || 10;
+  state.learningDirection= saved.learningDirection || 'es-de';
+  state.region           = saved.region || 'spain-castilla';
+  state.vocab            = VOCAB[state.niche] || VOCAB['urlaub'];
+  state.currentCat       = 'all';
 
   checkStreak(saved);
 
@@ -2145,7 +2588,7 @@ if (saved) {
   renderPronTips();
 
   // Nischen-Button beschriften
-  const nicheNames = { urlaub:'Urlaub', alltag:'Alltag', grundwortschatz:'Grundwortschatz', social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin' };
+  const nicheNames = { urlaub:'Urlaub', alltag:'Alltag', grundwortschatz:'Grundwortschatz', social:'Smalltalk', beruf:'Beruf', kinder:'Kinder', medizin:'Medizin', guayabita:'Guayabita' };
   const btn = document.getElementById('nicheBtn');
   if (btn) btn.textContent = '🌍 ' + (nicheNames[state.niche] || 'Nische');
 
