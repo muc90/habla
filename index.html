@@ -774,6 +774,63 @@ body::after {
   .niche-grid { grid-template-columns: 1fr; }
   .options-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  
+  /* Mobile Topbar */
+  .topbar {
+    padding: 0 12px;
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+  }
+  
+  .topbar-logo {
+    font-size: 20px;
+  }
+  
+  /* Hide button text, show only icons on very small screens */
+  .topbar-btn .btn-text {
+    display: none;
+  }
+  
+  .topbar-btn .btn-icon-only {
+    display: inline !important;
+  }
+  
+  .topbar-btn {
+    padding: 6px 10px !important;
+    font-size: 16px !important;
+  }
+  
+  .streak-badge, .xp-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+  
+  .xp-text {
+    display: none;
+  }
+  
+  /* Tabs scrollable */
+  .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab {
+    min-width: 70px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Extra small phones */
+  .topbar-logo {
+    font-size: 18px;
+  }
+  
+  .streak-badge, .xp-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
 }
 </style>
 </head>
@@ -867,16 +924,22 @@ body::after {
   <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-logo">¡Habla!</div>
-    <div style="display:flex; gap:10px; align-items:center">
-      <button onclick="showSettings()" style="background:var(--bg2); border:1px solid var(--border); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
+    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap">
+      <button onclick="showSettings()" class="topbar-btn" style="background:var(--bg2); border:1px solid var(--border); padding:6px 12px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
         onmouseover="this.style.borderColor='var(--ocean)';this.style.color='var(--ocean)'"
-        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">⚙️ Einstellungen</button>
-      <button onclick="showNicheSwitcher()" style="background:var(--bg2); border:1px solid var(--border); padding:6px 14px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+        <span class="btn-text">⚙️ Einstellungen</span>
+        <span class="btn-icon-only" style="display:none">⚙️</span>
+      </button>
+      <button onclick="showNicheSwitcher()" class="topbar-btn" style="background:var(--bg2); border:1px solid var(--border); padding:6px 12px; border-radius:50px; font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s"
         onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
-        id="nicheBtn">🌍 Nische</button>
+        id="nicheBtn">
+        <span class="btn-text">🌍 Nische</span>
+        <span class="btn-icon-only" style="display:none">🌍</span>
+      </button>
       <div class="streak-badge">🔥 <span id="streakCount">0</span></div>
-      <div class="xp-badge">⭐ <span id="xpCount">0</span> XP</div>
+      <div class="xp-badge">⭐ <span id="xpCount">0</span> <span class="xp-text">XP</span></div>
     </div>
   </div>
 
@@ -1824,8 +1887,14 @@ function loadCard() {
   document.getElementById('cardWordDe').textContent = showEs ? v.de : v.es;
   document.getElementById('cardExample').textContent = v.example;
   
-  // Automatisch vorlesen (nur Spanisch)
-  setTimeout(() => speak(v.es), 300);
+  // Automatisch vorlesen - richtige Sprache basierend auf Lernrichtung
+  if (state.learningDirection === 'de-es') {
+    // Deutsch lernen → Deutsch vorlesen
+    setTimeout(() => speak(v.de), 300);
+  } else {
+    // Spanisch lernen → Spanisch vorlesen
+    setTimeout(() => speak(v.es), 300);
+  }
 }
 
 function flipCard() {
@@ -1940,8 +2009,9 @@ function checkQuiz(btn, chosen, correct, direction) {
     fb.className = 'feedback-box wrong';
     fb.innerHTML = `❌ Leider falsch! <strong>-5 XP</strong><br><strong>Richtig:</strong> ${direction ? correct.de : correct.es}<br><em>${correct.example}</em>`;
     addXP(-5); // XP-Abzug bei falscher Antwort
-    // Richtige Antwort vorlesen
-    setTimeout(() => speak(correct.es), 500);
+    // Richtige Antwort vorlesen - die Zielsprache die gelernt wird
+    const wordToSpeak = state.learningDirection === 'de-es' ? correct.de : correct.es;
+    setTimeout(() => speak(wordToSpeak), 500);
   } else {
     btn.classList.add('correct');
     btn.classList.add('pop');
@@ -1951,7 +2021,8 @@ function checkQuiz(btn, chosen, correct, direction) {
     state.quizCorrect++;
     state.dailyDone++;
     updateProgress();
-    setTimeout(() => speak(correct.es), 300);
+    const wordToSpeak = state.learningDirection === 'de-es' ? correct.de : correct.es;
+    setTimeout(() => speak(wordToSpeak), 300);
   }
 
   fb.style.display = 'block';
@@ -2010,13 +2081,15 @@ function checkWrite() {
     state.dailyDone++;
     updateProgress();
     state.cardStatus[state.vocab.indexOf(currentWrite)] = 'learned';
-    setTimeout(() => speak(currentWrite.es), 300);
+    const wordToSpeak = state.learningDirection === 'de-es' ? currentWrite.de : currentWrite.es;
+    setTimeout(() => speak(wordToSpeak), 300);
   } else {
     inp.className = 'write-input wrong';
     fb.className = 'feedback-box wrong';
     fb.innerHTML = `❌ Fast! <strong>-5 XP</strong><br>Richtig: <strong>${currentWrite.es}</strong><br>${currentWrite.pron}<br><em>${currentWrite.example}</em>`;
     addXP(-5); // XP-Abzug
-    setTimeout(() => speak(currentWrite.es), 500);
+    const wordToSpeak = state.learningDirection === 'de-es' ? currentWrite.de : currentWrite.es;
+    setTimeout(() => speak(wordToSpeak), 500);
   }
 
   fb.style.display = 'block';
@@ -2144,14 +2217,24 @@ function speak(text, onDone) {
   }
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = 'es-ES';
+  
+  // Sprache basierend auf Lernrichtung setzen
+  if (state.learningDirection === 'de-es') {
+    // Deutsch lernen
+    utt.lang = 'de-DE';
+  } else {
+    // Spanisch lernen
+    utt.lang = 'es-ES';
+  }
+  
   utt.rate = 0.85;
   utt.pitch = 1;
 
-  // Spanische Stimme bevorzugen
+  // Passende Stimme bevorzugen
   const voices = window.speechSynthesis.getVoices();
-  const esVoice = voices.find(v => v.lang.startsWith('es')) || null;
-  if (esVoice) utt.voice = esVoice;
+  const targetLang = utt.lang.substring(0, 2); // 'de' oder 'es'
+  const matchVoice = voices.find(v => v.lang.startsWith(targetLang)) || null;
+  if (matchVoice) utt.voice = matchVoice;
 
   if (onDone) utt.onend = onDone;
   window.speechSynthesis.speak(utt);
